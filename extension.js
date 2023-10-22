@@ -1,36 +1,67 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 
 // This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-
-/**
- * @param {vscode.ExtensionContext} context
- */
 function activate(context) {
-  
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "devx" is now active!');
+  console.log('Congratulations, your extension "devx" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('devx.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
+  let disposable = vscode.commands.registerCommand('devx.helloWorld', function () {
+    // Create and show a WebView
+    const panel = vscode.window.createWebviewPanel(
+      'devxWebView', // Identifies the webview
+      'DevX WebView', // Title of the panel
+      vscode.ViewColumn.One, // Editor column to show the webview in
+      {}
+    );
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from DevX!');
-	});
+    // Set the HTML content for the webview
+    panel.webview.html = getWebViewContent();
 
-	context.subscriptions.push(disposable);
+    // Handle disposal of the webview panel when the command is done
+    panel.onDidDispose(() => {
+      // Clean up resources here
+    });
+
+    // You can send messages to the webview and handle them in your HTML/JavaScript code
+    panel.webview.postMessage({ text: 'Hello from the extension!' });
+  });
+
+  context.subscriptions.push(disposable);
+}
+
+function getWebViewContent() {
+  // Define the HTML content for the WebView
+  return `
+    <html>
+    <head>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Hello from WebView</h1>
+      <div id="message"></div>
+
+      <script>
+        // Handle messages sent from the extension
+        const vscode = acquireVsCodeApi();
+        vscode.postMessage({ text: 'Hello from WebView!' });
+
+        window.addEventListener('message', (event) => {
+          const message = event.data;
+          document.getElementById('message').textContent = message.text;
+        });
+      </script>
+    </body>
+    </html>
+  `;
 }
 
 // This method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
-	activate,
-	deactivate
-}
+  activate,
+  deactivate
+};
