@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+import { renderToString } from 'react-dom/server';
 
 // This method is called when your extension is activated
 function activate(context) {
@@ -29,6 +30,8 @@ function activate(context) {
 }
 
 function getWebViewContent() {
+  const componentString = renderToString(<ReactComponent />);
+
   // Define the HTML content for the WebView
   return `
     <html>
@@ -42,6 +45,7 @@ function getWebViewContent() {
     <body>
       <h1>Hello from WebView</h1>
       <div id="message"></div>
+	  <div id="root">${componentString}</div>
 
       <script>
         // Handle messages sent from the extension
