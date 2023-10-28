@@ -92,6 +92,13 @@ async function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.createNote', (reply) => {
         replyNote(reply);
     }));
+    let thread;
+    vscode.window.onDidChangeTextEditorSelection((e) => {
+        if (thread !== undefined) {
+            // Use the 'thread' variable directly
+            thread.dispose();
+        }
+    });
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply) => {
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
@@ -99,6 +106,7 @@ async function activate(context) {
             cancellable: true
         }, async () => {
             await askAI(reply);
+            thread = reply.thread;
         });
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.aiEdit', (reply) => {
@@ -108,6 +116,7 @@ async function activate(context) {
             cancellable: true
         }, async () => {
             await aiEdit(reply);
+            thread = reply.thread;
         });
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.genDocString', (reply) => {

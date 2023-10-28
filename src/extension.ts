@@ -4,7 +4,6 @@ import * as vscode from 'vscode';
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 
 let openai: OpenAIApi | undefined = undefined;
-
 let commentId = 1;
 
 class NoteComment implements vscode.Comment {
@@ -16,7 +15,7 @@ class NoteComment implements vscode.Comment {
 		public mode: vscode.CommentMode,
 		public author: vscode.CommentAuthorInformation,
 		public parent?: vscode.CommentThread,
-		public contextValue?: string
+		public contextValue?: string,
 	) {
 		this.id = ++commentId;
 		this.savedBody = this.body;
@@ -103,6 +102,17 @@ export async function activate(context: vscode.ExtensionContext) {
 		replyNote(reply);
 	}));
 
+	
+	let thread: vscode.CommentThread | undefined;
+
+	vscode.window.onDidChangeTextEditorSelection((e) => {
+		if (thread !== undefined) {
+			// Use the 'thread' variable directly
+			thread.dispose();
+		}
+	});
+
+
 	context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply: vscode.CommentReply) => {
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -110,6 +120,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			cancellable: true
 		}, async () => {
 			await askAI(reply);		
+			thread = reply.thread;
 		});
 	}));
 
@@ -119,21 +130,12 @@ export async function activate(context: vscode.ExtensionContext) {
 			title: "Generating AI response...",
 			cancellable: true
 		}, async () => {
-			await aiEdit(reply);		
+			await aiEdit(reply);
+			thread = reply.thread;
 		});
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('mywiki.genDocString', (reply: vscode.CommentReply) => {
-		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: "Generating AI response...",
-			cancellable: true
-		}, async () => {
-			reply.text = "Write a docstring for the above code and use syntax of the coding language to format it.";
-			await askAI(reply);		
-		});
-	}));
-
+	
 	context.subscriptions.push(vscode.commands.registerCommand('mywiki.replyNote', (reply: vscode.CommentReply) => {
 		replyNote(reply);
 	}));

@@ -49,7 +49,7 @@
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
-			{
+{
 				"command": "mywiki.createNote",
 				"title": "Create Note",
 				"enablement": "!commentIsEmpty"
@@ -114,10 +114,6 @@
 		"menus": {
 			"commandPalette": [
 				{
-					"command": "mywiki.createNote",
-					"when": "false"
-				},
-				{
 					"command": "mywiki.replyNote",
 					"when": "false"
 				},
@@ -127,10 +123,6 @@
 				},
 				{
 					"command": "mywiki.aiEdit",
-					"when": "false"
-				},
-				{
-					"command": "mywiki.genDocString",
 					"when": "false"
 				},
 				{
@@ -150,7 +142,7 @@
 				}
 			],
 			"comments/commentThread/context": [
-				{
+{
 					"command": "mywiki.createNote",
 					"group": "inline@5",
 					"when": "commentController == comment-scribeai && commentThreadIsEmpty"
@@ -168,11 +160,6 @@
 				{
 					"command": "mywiki.aiEdit",
 					"group": "inline@2",
-					"when": "commentController == comment-scribeai"
-				},
-				{
-					"command": "mywiki.genDocString",
-					"group": "inline@3",
 					"when": "commentController == comment-scribeai"
 				}
 			],
