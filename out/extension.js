@@ -119,16 +119,6 @@ async function activate(context) {
             thread = reply.thread;
         });
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('mywiki.genDocString', (reply) => {
-        vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: "Generating AI response...",
-            cancellable: true
-        }, async () => {
-            reply.text = "Write a docstring for the above code and use syntax of the coding language to format it.";
-            await askAI(reply);
-        });
-    }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.replyNote', (reply) => {
         replyNote(reply);
     }));
