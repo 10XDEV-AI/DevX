@@ -6,3 +6,256 @@ INFO [2023-10-28T07:11:31.908Z]: Set User: 42e11e07-aa45-4f98-9a68-0fe343e22fb9
 INFO [2023-10-28T07:11:31.909Z]: Initializing feature flags
 INFO [2023-10-28T07:11:32.704Z]: Tracking open event
 INFO [2023-10-28T07:11:32.707Z]: {}
+INFO [2023-10-29T10:36:50.453Z]: Set User: 42e11e07-aa45-4f98-9a68-0fe343e22fb9
+INFO [2023-10-29T10:36:50.453Z]: Set Tag: sentry_scope: vscode-extension
+INFO [2023-10-29T10:36:51.455Z]: Tracking open event
+INFO [2023-10-29T10:36:51.458Z]: {}
+INFO [2023-11-04T11:12:14.377Z]: Split failed to initialize
+ERROR [2023-11-04T11:12:14.405Z]: Split initialisation timed out in 12000ms.
+INFO [2023-11-04T11:12:14.405Z]: Tracking open event
+INFO [2023-11-04T11:12:14.406Z]: Creating language service
+INFO [2023-11-04T11:12:14.407Z]: Creating settings service
+INFO [2023-11-04T11:12:14.407Z]: Creating workspace service
+INFO [2023-11-04T11:12:14.407Z]: Creating remote AI
+INFO [2023-11-04T11:12:14.407Z]: Creating feedback service
+INFO [2023-11-04T11:12:14.407Z]: Creating share service
+INFO [2023-11-04T11:12:14.408Z]: Creating workspace controller
+INFO [2023-11-04T11:12:14.408Z]: Enabling workspace listeners
+INFO [2023-11-04T11:12:14.408Z]: Creating source
+INFO [2023-11-04T11:12:14.408Z]: Initializing workspace controller
+INFO [2023-11-04T11:12:14.409Z]: opened
+INFO [2023-11-04T11:12:14.409Z]: {}
+INFO [2023-11-04T13:35:56.941Z]: Tracking open event
+INFO [2023-11-04T13:35:56.946Z]: Creating language service
+INFO [2023-11-04T13:35:56.946Z]: Creating settings service
+INFO [2023-11-04T13:35:56.946Z]: Creating workspace service
+INFO [2023-11-04T13:35:56.947Z]: Creating remote AI
+INFO [2023-11-04T13:35:56.947Z]: Creating feedback service
+INFO [2023-11-04T13:35:56.947Z]: Creating share service
+INFO [2023-11-04T13:35:56.948Z]: Creating workspace controller
+INFO [2023-11-04T13:35:56.948Z]: Enabling workspace listeners
+INFO [2023-11-04T13:35:56.949Z]: Creating source
+INFO [2023-11-04T13:35:56.949Z]: Initializing workspace controller
+INFO [2023-11-04T13:35:56.950Z]: opened
+INFO [2023-11-04T13:35:56.950Z]: {}
+INFO [2023-11-05T14:36:41.607Z]: Tracking open event
+INFO [2023-11-05T14:36:41.610Z]: Creating language service
+INFO [2023-11-05T14:36:41.611Z]: Creating settings service
+INFO [2023-11-05T14:36:41.611Z]: Creating workspace service
+INFO [2023-11-05T14:36:41.612Z]: Creating remote AI
+INFO [2023-11-05T14:36:41.612Z]: Creating feedback service
+INFO [2023-11-05T14:36:41.613Z]: Creating share service
+INFO [2023-11-05T14:36:41.613Z]: Creating workspace controller
+INFO [2023-11-05T14:36:41.613Z]: Enabling workspace listeners
+INFO [2023-11-05T14:36:41.614Z]: Creating source
+INFO [2023-11-05T14:36:41.614Z]: Initializing workspace controller
+INFO [2023-11-05T14:36:41.615Z]: opened
+INFO [2023-11-05T14:36:41.615Z]: {}
+INFO [2023-11-07T10:14:15.972Z]: Tracking open event
+INFO [2023-11-07T10:14:15.974Z]: Creating language service
+INFO [2023-11-07T10:14:15.974Z]: Creating settings service
+INFO [2023-11-07T10:14:15.974Z]: Creating workspace service
+INFO [2023-11-07T10:14:15.974Z]: Creating remote AI
+INFO [2023-11-07T10:14:15.974Z]: Creating feedback service
+INFO [2023-11-07T10:14:15.975Z]: Creating share service
+INFO [2023-11-07T10:14:15.975Z]: Creating workspace controller
+INFO [2023-11-07T10:14:15.975Z]: Enabling workspace listeners
+INFO [2023-11-07T10:14:15.975Z]: Creating source
+INFO [2023-11-07T10:14:15.975Z]: Initializing workspace controller
+INFO [2023-11-07T10:14:15.976Z]: opened
+INFO [2023-11-07T10:14:15.976Z]: {}
+INFO [2023-11-07T17:06:41.572Z]: Tracking open event
+INFO [2023-11-07T17:06:41.573Z]: Creating language service
+INFO [2023-11-07T17:06:41.574Z]: Creating settings service
+INFO [2023-11-07T17:06:41.574Z]: Creating workspace service
+INFO [2023-11-07T17:06:41.574Z]: Creating remote AI
+INFO [2023-11-07T17:06:41.574Z]: Creating feedback service
+INFO [2023-11-07T17:06:41.574Z]: Creating share service
+INFO [2023-11-07T17:06:41.574Z]: Creating workspace controller
+INFO [2023-11-07T17:06:41.574Z]: Enabling workspace listeners
+INFO [2023-11-07T17:06:41.574Z]: Creating source
+INFO [2023-11-07T17:06:41.574Z]: Initializing workspace controller
+INFO [2023-11-07T17:06:41.575Z]: opened
+INFO [2023-11-07T17:06:41.575Z]: {}
+INFO [2023-11-08T08:15:18.257Z]: Tracking open event
+INFO [2023-11-08T08:15:18.258Z]: Creating language service
+INFO [2023-11-08T08:15:18.258Z]: Creating settings service
+INFO [2023-11-08T08:15:18.259Z]: Creating workspace service
+INFO [2023-11-08T08:15:18.259Z]: Creating remote AI
+INFO [2023-11-08T08:15:18.259Z]: Creating feedback service
+INFO [2023-11-08T08:15:18.259Z]: Creating share service
+INFO [2023-11-08T08:15:18.259Z]: Creating workspace controller
+INFO [2023-11-08T08:15:18.259Z]: Enabling workspace listeners
+INFO [2023-11-08T08:15:18.259Z]: Creating source
+INFO [2023-11-08T08:15:18.259Z]: Initializing workspace controller
+INFO [2023-11-08T08:15:18.260Z]: opened
+INFO [2023-11-08T08:15:18.260Z]: {}
+INFO [2023-11-08T08:15:24.912Z]: Preparing to initialize extension
+INFO [2023-11-08T08:15:25.918Z]: Registering flag observer
+INFO [2023-11-08T08:15:25.919Z]: Navigating to loading page
+INFO [2023-11-08T08:15:25.919Z]: Navigation
+INFO [2023-11-08T08:15:25.919Z]: {"page":"/loading"}
+INFO [2023-11-08T08:15:25.920Z]: Initializing workspace controller
+INFO [2023-11-08T08:15:25.920Z]: Navigating to blank page
+INFO [2023-11-08T08:15:25.921Z]: Creating URI handler
+INFO [2023-11-08T08:15:25.921Z]: Getting auth service props
+INFO [2023-11-08T08:15:25.922Z]: Creating auth service
+INFO [2023-11-08T08:15:25.922Z]: Setting network auth service
+INFO [2023-11-08T08:15:25.922Z]: Creating context store
+INFO [2023-11-08T08:15:25.922Z]: Creating engine
+INFO [2023-11-08T08:15:25.928Z]: Creating vector db
+INFO [2023-11-08T08:15:25.928Z]: Creating sql db
+INFO [2023-11-08T08:15:25.928Z]: Creating config manager
+INFO [2023-11-08T08:15:25.930Z]: Get languages
+INFO [2023-11-08T08:15:25.990Z]: Get Overview
+INFO [2023-11-08T08:15:25.991Z]: Creating code parser
+INFO [2023-11-08T08:15:25.991Z]: Creating code index
+INFO [2023-11-08T08:15:25.991Z]: Creating semantic
+INFO [2023-11-08T08:15:25.991Z]: Creating keyword
+INFO [2023-11-08T08:15:25.991Z]: Creating file search
+INFO [2023-11-08T08:15:25.991Z]: Creating graphs
+INFO [2023-11-08T08:15:25.991Z]: Initialising engine
+INFO [2023-11-08T08:15:26.187Z]: Creating project bot props
+INFO [2023-11-08T08:15:26.187Z]: Creating plan service
+INFO [2023-11-08T08:15:26.187Z]: Creating terms service
+INFO [2023-11-08T08:15:26.187Z]: Creating auth controller
+INFO [2023-11-08T08:15:26.187Z]: Initializing auth controller
+INFO [2023-11-08T08:15:26.188Z]: Checking auth
+INFO [2023-11-08T08:15:29.132Z]: Set User: 202f6mXbnrNB6Ln0pNGsDFmyd6u1
+INFO [2023-11-08T08:15:29.139Z]: Creating plan controller
+INFO [2023-11-08T08:15:29.139Z]: Initializing plan controller
+INFO [2023-11-08T08:15:30.522Z]: Creating status controller
+INFO [2023-11-08T08:15:30.523Z]: Creating chat bot
+INFO [2023-11-08T08:15:30.525Z]: Creating git service
+INFO [2023-11-08T08:15:30.525Z]: Creating user context
+INFO [2023-11-08T08:15:30.525Z]: Creating search controller
+INFO [2023-11-08T08:15:30.526Z]: Initializing search controller
+INFO [2023-11-08T08:15:30.528Z]: Creating index controller
+INFO [2023-11-08T08:15:30.528Z]: Initializing index controller
+INFO [2023-11-08T08:15:30.528Z]: Creating settings controller
+INFO [2023-11-08T08:15:30.529Z]: Initializing settings controller
+INFO [2023-11-08T08:15:30.529Z]: Creating navigation controller
+INFO [2023-11-08T08:15:30.529Z]: Initializing navigation controller
+INFO [2023-11-08T08:15:30.529Z]: Registering auth service with auth controller
+INFO [2023-11-08T08:15:30.529Z]: Calculating navigation
+INFO [2023-11-08T08:15:30.540Z]: [Engine.isIndexed] Not indexed
+INFO [2023-11-08T08:15:30.540Z]: {"configIndexed":false,"ignoreIndexed":false,"semanticIndexed":false,"keywordIndexed":true,"graphIndexed":true,"overviewIndexed":false}
+INFO [2023-11-08T08:15:30.541Z]: Navigation
+INFO [2023-11-08T08:15:30.541Z]: {"page":"/initialize/project"}
+INFO [2023-11-08T08:15:30.541Z]: Fully initialized!
+INFO [2023-11-08T08:15:30.542Z]: extension_initialized
+INFO [2023-11-08T08:15:30.542Z]: {"timeToInit":5630}
+INFO [2023-11-08T08:15:37.374Z]: project_languages
+INFO [2023-11-08T08:15:37.374Z]: {"languages":["TypeScript","JSON"]}
+INFO [2023-11-08T08:15:37.402Z]: Navigation
+INFO [2023-11-08T08:15:37.402Z]: {"page":"/initialize/ignore"}
+INFO [2023-11-08T08:15:37.475Z]: [Engine.isIndexed] Not indexed
+INFO [2023-11-08T08:15:37.475Z]: {"configIndexed":true,"ignoreIndexed":true,"semanticIndexed":false,"keywordIndexed":true,"graphIndexed":true,"overviewIndexed":false}
+INFO [2023-11-08T08:15:37.551Z]: [Engine.isIndexed] Not indexed
+INFO [2023-11-08T08:15:37.551Z]: {"configIndexed":true,"ignoreIndexed":true,"semanticIndexed":false,"keywordIndexed":true,"graphIndexed":true,"overviewIndexed":false}
+INFO [2023-11-08T08:15:39.070Z]: Navigation
+INFO [2023-11-08T08:15:39.070Z]: {"page":"/initialize/progress"}
+INFO [2023-11-08T08:15:39.096Z]: Found 4 files
+INFO [2023-11-08T08:15:39.098Z]: project_initialize_start
+INFO [2023-11-08T08:15:39.098Z]: {"name":"DevX","languages":["TypeScript","JSON","JavaScript","YAML","Markdown","HTML","PHP"],"ignored":["*.d.ts","*.min.js",".cache",".changeset",".cosine",".devcontainer",".expo",".expo-settings",".expo-shared",".git",".gitsecret",".husky",".idea",".next",".nyc_output",".parcel-cache",".pnp",".pnp.js",".storybook",".turbo",".versionbot",".vs",".vscode",".yarn",".yarnrc","_generated","build","coverage","dist","logs","node_modules","out"]}
+INFO [2023-11-08T08:15:40.448Z]: [Engine.indexCode] Preindexing with graph
+INFO [2023-11-08T08:15:40.448Z]: [SemanticCodeSearch.preIndex] Embedding components
+INFO [2023-11-08T08:15:40.448Z]: {"added":382,"deleted":0}
+INFO [2023-11-08T08:15:40.963Z]: [CodeGraphOrchestrator.preIndex] Preindexing
+INFO [2023-11-08T08:15:40.963Z]: [CodeGraphOrchestrator.preIndex] Linking
+INFO [2023-11-08T08:15:40.963Z]: {"language":"TypeScript"}
+INFO [2023-11-08T08:15:41.140Z]: [CodeGraphOrchestrator.preIndex] Symbolising
+INFO [2023-11-08T08:15:41.140Z]: {"language":"TypeScript","percent":100,"file":"src/extension.ts"}
+INFO [2023-11-08T08:15:41.605Z]: [CodeGraphOrchestrator.preIndex] Linking
+INFO [2023-11-08T08:15:41.606Z]: {"language":"TypeScript","percent":100.18115942028984,"file":"src/extension.ts"}
+INFO [2023-11-08T08:15:41.606Z]: [CodeGraphOrchestrator.preIndex] Linking
+INFO [2023-11-08T08:15:41.606Z]: {"language":"TypeScript","percent":100}
+INFO [2023-11-08T08:15:41.606Z]: [CodeGraphOrchestrator.preIndex] Linking complete
+INFO [2023-11-08T08:15:41.606Z]: {"language":"TypeScript"}
+INFO [2023-11-08T08:15:41.606Z]: [CodeGraphOrchestrator.preIndex] Preindexed
+INFO [2023-11-08T08:15:48.607Z]: Tokens for Overview Summary
+INFO [2023-11-08T08:15:48.607Z]: {"projectName":2,"languages":14,"likelyLibraries":0,"code":0,"nonCode":0,"total":183}
+INFO [2023-11-08T08:15:56.611Z]: [SemanticCodeSearch.preIndex] Embedded components
+INFO [2023-11-08T08:15:56.612Z]: {"length":386}
+INFO [2023-11-08T08:15:56.613Z]: [Engine.indexCode]: Preindexed semantic & graph
+INFO [2023-11-08T08:15:56.613Z]: [Engine.indexCode] Indexing code
+INFO [2023-11-08T08:15:56.614Z]: [CodeIndex.index] Indexing with MetaDB
+INFO [2023-11-08T08:15:56.614Z]: {"files":{"added":4,"changed":0,"deleted":0},"components":{"added":382,"deleted":0},"index":1}
+INFO [2023-11-08T08:15:56.614Z]: [SemanticCodeSearch.index] Indexing components
+INFO [2023-11-08T08:15:56.614Z]: {"added":382,"deleted":0}
+INFO [2023-11-08T08:15:56.614Z]: [SemanticCodeSearch.index] Deleting components
+INFO [2023-11-08T08:15:56.614Z]: {"embeddingsToDelete":0}
+INFO [2023-11-08T08:15:56.615Z]: [KeywordCodeSearch.index] Indexing
+INFO [2023-11-08T08:15:56.659Z]: [KeywordCodeSearch.index] Saving index
+INFO [2023-11-08T08:15:56.660Z]: [CodeGraphOrchestrator.index] Indexing
+INFO [2023-11-08T08:15:56.660Z]: [CodeGraphOrchestrator.index] Indexing Language
+INFO [2023-11-08T08:15:56.660Z]: {"language":"TypeScript"}
+INFO [2023-11-08T08:15:56.662Z]: [SemanticCodeSearch.index] Writing components
+INFO [2023-11-08T08:15:56.662Z]: {"resuts":386}
+INFO [2023-11-08T08:15:56.810Z]: [CodeGraphOrchestrator.index] Indexed
+INFO [2023-11-08T08:15:56.810Z]: [KeywordCodeSearch.index] Indexed
+INFO [2023-11-08T08:15:56.824Z]: [SemanticCodeSearch.index] Indexed components
+INFO [2023-11-08T08:15:56.824Z]: {"resuts":386}
+INFO [2023-11-08T08:15:56.856Z]: [Engine.isIndexed] Not indexed
+INFO [2023-11-08T08:15:56.856Z]: {"configIndexed":true,"ignoreIndexed":true,"semanticIndexed":true,"keywordIndexed":true,"graphIndexed":true,"overviewIndexed":false}
+INFO [2023-11-08T08:15:56.857Z]: [CodeIndex.index] Indexed with MetaDB
+INFO [2023-11-08T08:15:56.857Z]: [Engine.indexCode] Indexed code
+INFO [2023-11-08T08:15:57.132Z]: [Engine.isIndexed] Not indexed
+INFO [2023-11-08T08:15:57.132Z]: {"configIndexed":true,"ignoreIndexed":true,"semanticIndexed":true,"keywordIndexed":true,"graphIndexed":true,"overviewIndexed":false}
+INFO [2023-11-08T08:16:11.389Z]: project_initialize_success
+INFO [2023-11-08T08:16:11.389Z]: {"name":"DevX","languages":["TypeScript","JSON","JavaScript","YAML","Markdown","HTML","PHP"],"ignored":["*.d.ts","*.min.js",".cache",".changeset",".cosine",".devcontainer",".expo",".expo-settings",".expo-shared",".git",".gitsecret",".husky",".idea",".next",".nyc_output",".parcel-cache",".pnp",".pnp.js",".storybook",".turbo",".versionbot",".vs",".vscode",".yarn",".yarnrc","_generated","build","coverage","dist","logs","node_modules","out"]}
+INFO [2023-11-08T11:42:36.401Z]: project_reinitialize_start
+INFO [2023-11-08T11:42:36.401Z]: {}
+INFO [2023-11-08T11:42:36.642Z]: [Engine.indexCode] Preindexing with graph
+INFO [2023-11-08T11:42:36.643Z]: [SemanticCodeSearch.preIndex] Embedding components
+INFO [2023-11-08T11:42:36.643Z]: {"added":3,"deleted":3}
+INFO [2023-11-08T11:42:36.683Z]: [CodeGraphOrchestrator.preIndex] Preindexing
+INFO [2023-11-08T11:42:36.684Z]: [CodeGraphOrchestrator.preIndex] Linking
+INFO [2023-11-08T11:42:36.684Z]: {"language":"TypeScript"}
+INFO [2023-11-08T11:42:36.899Z]: [CodeGraphOrchestrator.preIndex] Symbolising
+INFO [2023-11-08T11:42:36.900Z]: {"language":"TypeScript","percent":100,"file":"src/extension.ts"}
+INFO [2023-11-08T11:42:37.502Z]: [CodeGraphOrchestrator.preIndex] Linking
+INFO [2023-11-08T11:42:37.502Z]: {"language":"TypeScript","percent":100.18115942028984,"file":"src/extension.ts"}
+INFO [2023-11-08T11:42:37.502Z]: [CodeGraphOrchestrator.preIndex] Linking
+INFO [2023-11-08T11:42:37.502Z]: {"language":"TypeScript","percent":100}
+INFO [2023-11-08T11:42:37.502Z]: [CodeGraphOrchestrator.preIndex] Linking complete
+INFO [2023-11-08T11:42:37.502Z]: {"language":"TypeScript"}
+INFO [2023-11-08T11:42:37.503Z]: [CodeGraphOrchestrator.preIndex] Preindexed
+INFO [2023-11-08T11:42:41.525Z]: [SemanticCodeSearch.preIndex] Embedded components
+INFO [2023-11-08T11:42:41.525Z]: {"length":3}
+INFO [2023-11-08T11:42:41.525Z]: [Engine.indexCode]: Preindexed semantic & graph
+INFO [2023-11-08T11:42:41.525Z]: [Engine.indexCode] Indexing code
+INFO [2023-11-08T11:42:41.525Z]: [CodeIndex.index] Indexing with MetaDB
+INFO [2023-11-08T11:42:41.525Z]: {"files":{"added":0,"changed":1,"deleted":0},"components":{"added":3,"deleted":3},"index":383}
+INFO [2023-11-08T11:42:41.525Z]: [SemanticCodeSearch.index] Indexing components
+INFO [2023-11-08T11:42:41.525Z]: {"added":3,"deleted":3}
+INFO [2023-11-08T11:42:41.525Z]: [SemanticCodeSearch.index] Deleting components
+INFO [2023-11-08T11:42:41.525Z]: {"embeddingsToDelete":3}
+INFO [2023-11-08T11:42:41.526Z]: [KeywordCodeSearch.index] Indexing
+INFO [2023-11-08T11:42:41.549Z]: [KeywordCodeSearch.index] Saving index
+INFO [2023-11-08T11:42:41.550Z]: [CodeGraphOrchestrator.index] Indexing
+INFO [2023-11-08T11:42:41.550Z]: [CodeGraphOrchestrator.index] Indexing Language
+INFO [2023-11-08T11:42:41.550Z]: {"language":"TypeScript"}
+INFO [2023-11-08T11:42:41.550Z]: [SemanticCodeSearch.index] Writing components
+INFO [2023-11-08T11:42:41.550Z]: {"resuts":3}
+INFO [2023-11-08T11:42:41.651Z]: [CodeGraphOrchestrator.index] Indexed
+INFO [2023-11-08T11:42:41.659Z]: [KeywordCodeSearch.index] Indexed
+INFO [2023-11-08T11:42:41.667Z]: [SemanticCodeSearch.index] Indexed components
+INFO [2023-11-08T11:42:41.667Z]: {"resuts":3}
+INFO [2023-11-08T11:42:41.686Z]: [CodeIndex.index] Indexed with MetaDB
+INFO [2023-11-08T11:42:41.687Z]: [Engine.indexCode] Indexed code
+INFO [2023-11-08T11:42:41.691Z]: project_reinitialize_success
+INFO [2023-11-08T11:42:41.691Z]: {}
+INFO [2023-11-08T11:59:38.376Z]: Tracking open event
+INFO [2023-11-08T11:59:38.379Z]: Creating language service
+INFO [2023-11-08T11:59:38.379Z]: Creating settings service
+INFO [2023-11-08T11:59:38.379Z]: Creating workspace service
+INFO [2023-11-08T11:59:38.379Z]: Creating remote AI
+INFO [2023-11-08T11:59:38.379Z]: Creating feedback service
+INFO [2023-11-08T11:59:38.379Z]: Creating share service
+INFO [2023-11-08T11:59:38.379Z]: Creating workspace controller
+INFO [2023-11-08T11:59:38.379Z]: Enabling workspace listeners
+INFO [2023-11-08T11:59:38.380Z]: Creating source
+INFO [2023-11-08T11:59:38.380Z]: Initializing workspace controller
+INFO [2023-11-08T11:59:38.380Z]: opened
+INFO [2023-11-08T11:59:38.380Z]: {}

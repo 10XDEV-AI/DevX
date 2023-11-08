@@ -1,0 +1,60 @@
+{
+  "projectName": "DevX",
+  "summary": "You haven't provided any specific files or their summaries for the project named \"DevX\". However, based on the languages used, I can make some general assumptions.\n\nThis project is likely a web-based application or platform. TypeScript, JavaScript, HTML, and PHP are all commonly used in web development. TypeScript and JavaScript are used for client-side and server-side scripting, HTML is used for structuring the web pages, and PHP is used for server-side scripting.\n\nThe use of JSON indicates that the project likely involves data interchange, possibly between different components of the application or with external services. JSON is a popular data format for transmitting data between a server and a web application, or as a data storage format.\n\nThe presence of Markdown and YAML files suggests that the project is well-documented and uses configuration files. Markdown is often used for documentation, README files, and other text documents that accompany the code. YAML is often used for configuration files, which can be used to set up environments, specify parameters for software execution, or define deployment instructions.\n\nWithout specific file names or their summaries, it's hard to guess more about the functionality of the project. It could be anything from a content management system, a web-based application, a data visualization tool, or even a full-stack web development framework.",
+  "languages": [
+    "TypeScript",
+    "JSON",
+    "JavaScript",
+    "Markdown",
+    "YAML",
+    "HTML",
+    "PHP"
+  ],
+  "noteworthyDependencies": [
+    {
+      "name": "openai",
+      "version": "^3.2.1"
+    },
+    {
+      "name": "@types/node",
+      "version": "^16.18.33"
+    },
+    {
+      "name": "@types/vscode",
+      "version": "~1.65.0"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "^5.59.7"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "version": "^5.59.7"
+    },
+    {
+      "name": "eslint",
+      "version": "^8.41.0"
+    },
+    {
+      "name": "typescript",
+      "version": "^4.9.5"
+    }
+  ],
+  "samplePrompts": [
+    "How is the TypeScript utilized in this project?",
+    "What role does PHP play in this application?",
+    "How is data interchange handled with JSON?",
+    "How is the openai dependency used in this codebase?",
+    "What types of rules are set up in the eslint plugin?",
+    "What is the purpose of the @types/vscode dependency?",
+    "What are the Markdown files used for in this project?",
+    "What sort of configurations are contained within the YAML files?",
+    "How is HTML structured for UI in this project?",
+    "What is the purpose of the @typescript-eslint/parser in this project?",
+    "How does the integration of TypeScript and JavaScript work?",
+    "What is the version of Typescript used and how it is configured?",
+    "How is the JSON data used, are there specific data structures that have been defined?",
+    "Why and where in the codebase JSON data is being stringified or parsed?",
+    "What is the structure of the PHP files and how are they interacting with the JavaScript?"
+  ]
+}

@@ -1,16 +1,12 @@
 {
-	"name": "scribeai",
-	"displayName": "ChatGPT & GPT extension - ScribeAI",
-	"description": "🚀 Use ChatGPT & GPT right inside VSCode to enhance and automate your coding with AI-powered assistance",
+	"name": "devxai",
+	"displayName": "DevX AI",
+	"description": "Edit with ChatGPT",
 	"version": "1.2.1",
-	"publisher": "AndrewZhang",
+	"publisher": "10XDEV.AI",
 	"private": true,
 	"icon": "resources/chatbot.png",
 	"license": "Apache-2.0",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ajikan/ScribeAI"
-	},
 	"engines": {
 		"vscode": "^1.65.0"
 	},
@@ -49,30 +45,13 @@
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
-{
-				"command": "mywiki.createNote",
-				"title": "Create Note",
-				"enablement": "!commentIsEmpty"
-			},
-			{
-				"command": "mywiki.replyNote",
-				"title": "Create Note",
-				"enablement": "!commentIsEmpty"
-			},
 			{
 				"command": "mywiki.askAI",
-				"title": "Ask AI",
-				"enablement": "!commentIsEmpty"
+				"title": "Ask AI"
 			},
 			{
 				"command": "mywiki.aiEdit",
-				"title": "AI Edit",
-				"enablement": "!commentIsEmpty"
-			},
-			{
-				"command": "mywiki.genDocString",
-				"title": "Generate Docstring",
-				"enablement": "true"
+				"title": "AI Edit"
 			},
 			{
 				"command": "mywiki.editNote",
@@ -109,14 +88,14 @@
 			{
 				"command": "mywiki.dispose",
 				"title": "Remove All Notes"
+			},
+			{
+				"command": "mywiki.inline.new",
+				"title": "Ask DevX Inline"
 			}
 		],
 		"menus": {
 			"commandPalette": [
-				{
-					"command": "mywiki.replyNote",
-					"when": "false"
-				},
 				{
 					"command": "mywiki.askAI",
 					"when": "false"
@@ -131,6 +110,10 @@
 				},
 				{
 					"command": "mywiki.deleteNoteComment",
+					"when": "false"
+				},
+				{
+					"command": "mywiki.inline.new",
 					"when": "false"
 				}
 			],
@@ -138,71 +121,74 @@
 				{
 					"command": "mywiki.deleteNote",
 					"group": "navigation",
-					"when": "commentController == comment-scribeai && !commentThreadIsEmpty"
+					"when": "commentController == comment-devxai && !commentThreadIsEmpty"
 				}
 			],
 			"comments/commentThread/context": [
-{
-					"command": "mywiki.createNote",
-					"group": "inline@5",
-					"when": "commentController == comment-scribeai && commentThreadIsEmpty"
-				},
-				{
-					"command": "mywiki.replyNote",
-					"group": "inline@4",
-					"when": "commentController == comment-scribeai && !commentThreadIsEmpty"
-				},
 				{
 					"command": "mywiki.askAI",
 					"group": "inline@1",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-devxai"
 				},
 				{
 					"command": "mywiki.aiEdit",
 					"group": "inline@2",
-					"when": "commentController == comment-scribeai"
-				}
+					"when": "commentController == comment-devxai"
+				}			
 			],
 			"comments/comment/title": [
 				{
 					"command": "mywiki.editNote",
 					"group": "group@1",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-devxai"
 				},
 				{
 					"command": "mywiki.deleteNoteComment",
 					"group": "group@2",
-					"when": "commentController == comment-scribeai && comment == canDelete"
+					"when": "commentController == comment-devxai && comment == canDelete"
 				}
 			],
 			"comments/comment/context": [
 				{
 					"command": "mywiki.cancelsaveNote",
 					"group": "inline@1",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-devxai"
 				},
 				{
 					"command": "mywiki.saveNote",
 					"group": "inline@2",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-devxai"
 				}
 			]
 		},
+		"keybindings": [
+			{
+			  "command": "mywiki.askAI",
+			  "key": "ctrl+i ctrl+o",
+			  "mac": "cmd+i cmd+o",
+			  "when": "editorFocus && commentController == comment-devxai"
+			},
+			{
+				"command": "mywiki.inline.new",
+				"key": "ctrl+shift+c",
+				"mac": "cmd+c cmd+d",
+				"when": "editorFocus && commentController == comment-devxai"
+			}
+		  ],
 		"configuration": {
-			"title": "ScribeAI",
+			"title": "devxai",
 			"properties": {
-				"scribeai.ApiKey": {
+				"devxai.ApiKey": {
 					"type": "string",
 					"default": "",
 					"scope": "application",
 					"markdownDescription": "Your personal OpenAI API key. If you don't have one, generate a new one [here](https://beta.openai.com/account/api-keys).\n\nDon't forget to [restart your extension](command:workbench.action.reloadWindow) once you finished configuring so that your extension gets loaded with the new configurations."
 				},
-				"scribeai.models": {
+				"devxai.models": {
 					"type": "string",
-					"default": "ChatGPT",
+					"default": "gpt-3.5-turbo",
 					"enum": [
-						"text-davinci-003",
-						"ChatGPT",
+						"gpt-3.5-turbo",
 						"gpt-4"
 					],
 					"enumDescriptions": [
