@@ -134,7 +134,7 @@
 					"command": "mywiki.aiEdit",
 					"group": "inline@2",
 					"when": "commentController == comment-devxai"
-				}			
+				}
 			],
 			"comments/comment/title": [
 				{
@@ -163,10 +163,10 @@
 		},
 		"keybindings": [
 			{
-			  "command": "mywiki.askAI",
-			  "key": "ctrl+i ctrl+o",
-			  "mac": "cmd+i cmd+o",
-			  "when": "editorFocus && commentController == comment-devxai"
+				"command": "mywiki.askAI",
+				"key": "ctrl+i ctrl+o",
+				"mac": "cmd+i cmd+o",
+				"when": "editorFocus && commentController == comment-devxai"
 			},
 			{
 				"command": "mywiki.inline.new",
@@ -174,7 +174,7 @@
 				"mac": "cmd+c cmd+d",
 				"when": "editorFocus && commentController == comment-devxai"
 			}
-		  ],
+		],
 		"configuration": {
 			"title": "devxai",
 			"properties": {
@@ -216,6 +216,6 @@
 		"typescript": "^4.9.5"
 	},
 	"dependencies": {
-		"openai": "^3.2.1"
+		"openai": "^4.17.3"
 	}
 }
