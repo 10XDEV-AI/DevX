@@ -1,1 +1,7 @@
 node_modules
+.cosine
+.github
+.task
+.vscode
+.DS_Store
+.eslintrc.js
