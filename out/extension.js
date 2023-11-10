@@ -318,18 +318,27 @@ async function activate(context) {
                 frequency_penalty: 1,
                 presence_penalty: 1,
             });
-            const responseText = response.data.choices[0].message?.content ? response.data.choices[0].message?.content : 'An error occured. Please try again...';
+            const responseText = response.data.choices[0].message?.content ? response.data.choices[0].message?.content : 'An error occurred. Please try again...';
             if (responseText) {
-                const editor = await vscode.window.showTextDocument(thread.uri);
-                if (!editor) {
-                    return; // No open text editor
+                const tripleTicks = '```';
+                const firstTicksIndex = responseText.indexOf(tripleTicks);
+                const lastTicksIndex = responseText.lastIndexOf(tripleTicks);
+                if (firstTicksIndex !== -1 && lastTicksIndex !== -1 && firstTicksIndex < lastTicksIndex) {
+                    const contentBetweenTicks = responseText.substring(firstTicksIndex + tripleTicks.length, lastTicksIndex);
+                    const editor = await vscode.window.showTextDocument(thread.uri);
+                    if (!editor) {
+                        return; // No open text editor
+                    }
+                    editor.edit(editBuilder => {
+                        editBuilder.replace(thread.range, contentBetweenTicks);
+                    });
                 }
-                editor.edit(editBuilder => {
-                    editBuilder.replace(thread.range, responseText + "");
-                });
+                else {
+                    vscode.window.showErrorMessage('Unable to find content between triple ticks.');
+                }
             }
             else {
-                vscode.window.showErrorMessage('An error occured. Please try again...');
+                vscode.window.showErrorMessage('An error occurred. Please try again...');
             }
         }
     }
