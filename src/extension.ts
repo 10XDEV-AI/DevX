@@ -1,9 +1,8 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
-let openai: OpenAIApi | undefined = undefined;
 let commentId = 1;
 
 class NoteComment implements vscode.Comment {
@@ -38,12 +37,31 @@ export async function showInputBox() {
 			if (text === '') {
 				return 'The API Key can not be empty';
 			}
+			
+			const apiKey: string | undefined = vscode.workspace.getConfiguration('devxai').get('ApiKey') as string | undefined;
+			const openai = new OpenAI({
+				apiKey: apiKey,
+			});  
+
 			try {
-				openai = new OpenAIApi(new Configuration({
-					apiKey: text,
-				}));
-				await openai.listModels();
-			} catch(err) {
+				const response = await openai.chat.completions.create({
+					model: "gpt-3.5-turbo",
+					messages: [
+						{
+							"role": "user",
+							"content": "hi"
+						}
+					],
+					temperature: 1,
+					max_tokens: 256,
+					top_p: 1,
+					frequency_penalty: 0,
+					presence_penalty: 0,
+				});
+
+				// You can add additional validation logic here based on the response if needed
+
+			} catch (err) {
 				return 'Your API key is invalid';
 			}
 			return null;
@@ -57,11 +75,13 @@ export async function showInputBox() {
 
 async function validateAPIKey() {
 	try {
-		openai = new OpenAIApi(new Configuration({
-			apiKey: vscode.workspace.getConfiguration('devxai').get('ApiKey'),
-		}));
-		await openai.listModels();
-	} catch(err) {
+		const apiKey: string | undefined = vscode.workspace.getConfiguration('devxai').get('ApiKey') as string | undefined;
+			const openai = new OpenAI({
+				apiKey: apiKey,
+			});  
+			openai.models.list();
+	}
+	catch(err) {
 		return false;
 	}
 	return true;
@@ -74,12 +94,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		const apiKey = await showInputBox();
 		await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
 	}
-	if (openai === undefined) {
-		openai = new OpenAIApi(new Configuration({
-			apiKey: vscode.workspace.getConfiguration('devxai').get('ApiKey'),
-		}));
-	}
-
+	
 	// A `CommentController` is able to provide comments for documents.
 	const commentController = vscode.comments.createCommentController('comment-devxai', 'devxai Comment Controller');
 	context.subscriptions.push(commentController);
@@ -203,7 +218,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		commentController.dispose();
 	}));
 
-	
 
 	/**
 	 * Generates the prompt to pass to OpenAI ChatGPT API.
@@ -217,7 +231,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * @returns 
 	 */
 	async function generatePromptChatGPT(question: string, thread: vscode.CommentThread) {
-		const messages: ChatCompletionRequestMessage[] = [];
+		const messages = [];
 		//const rolePlay =
 		//	"I want you to act as a highly intelligent AI chatbot that has deep understanding of any coding language and its API documentations. I will provide you with a code block and your role is to provide a comprehensive answer to any questions or requests that I will ask about the code block. Please answer in as much detail as possible and not be limited to brevity. It is very important that you provide verbose answers and answer in markdown format.";
 		const codeBlock = await getCommentThreadCode(thread);
@@ -252,7 +266,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * @returns 
 	 */
 	async function generatePromptChatGPTEdit(question: string, thread: vscode.CommentThread) {
-		const messages: ChatCompletionRequestMessage[] = [];
+		const messages= [];
 		//const rolePlay =
 		//	"I want you to act as a highly intelligent AI chatbot that has deep understanding of any coding language and its API documentations. I will provide you with a code block and your role is to provide a comprehensive answer to any questions or requests that I will ask about the code block. Please answer in as much detail as possible and not be limited to brevity. It is very important that you provide verbose answers and answer in markdown format.";
 		const codeBlock = await getCommentThreadCode(thread);
@@ -298,25 +312,19 @@ export async function activate(context: vscode.ExtensionContext) {
 		const thread = reply.thread;
 		const model = vscode.workspace.getConfiguration('devxai').get('models') + "";
 		
-		let chatGPTPrompt: ChatCompletionRequestMessage[] = [];
+		let chatGPTPrompt = [];
 		chatGPTPrompt = await generatePromptChatGPT(question, thread);
 		
 		const humanComment = new NoteComment(new vscode.MarkdownString(question), vscode.CommentMode.Preview, { name: 'VS Code', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 		thread.comments = [...thread.comments, humanComment];
 		
-		// If openai is not initialized initialize it with existing API Key 
-		// or if doesn't exist then ask user to input API Key.
-		if (openai === undefined) {
-			if (vscode.workspace.getConfiguration('devxai').get('ApiKey') === '') {
-				const apiKey = await showInputBox();
-			}
-		
-			openai = new OpenAIApi(new Configuration({
-				apiKey: vscode.workspace.getConfiguration('devxai').get('ApiKey'),
-			}));
-		}
+		const apiKey: string | undefined = vscode.workspace.getConfiguration('devxai').get('ApiKey') as string | undefined;
+			const openai = new OpenAI({
+				apiKey: apiKey,
+			});  
+
 		if (model === "gpt-3.5-turbo" || model === "gpt-4") {
-			const response = await openai.createChatCompletion({
+			const response = await openai.chat.completions.create({
 				model: model,
 				messages: chatGPTPrompt,
 				temperature: 1,
@@ -347,23 +355,16 @@ export async function activate(context: vscode.ExtensionContext) {
 		const thread = reply.thread;
 		const model = vscode.workspace.getConfiguration('devxai').get('models') + "";
 		
-		let chatGPTPrompt: ChatCompletionRequestMessage[] = [];
+		let chatGPTPrompt = [];
 		chatGPTPrompt = await generatePromptChatGPTEdit(question, thread);
 		
-		
-		// If openai is not initialized initialize it with existing API Key 
-		// or if doesn't exist then ask user to input API Key.
-		if (openai === undefined) {
-			if (vscode.workspace.getConfiguration('devxai').get('ApiKey') === '') {
-				const apiKey = await showInputBox();
-			}
-		
-			openai = new OpenAIApi(new Configuration({
-				apiKey: vscode.workspace.getConfiguration('devxai').get('ApiKey'),
-			}));
-		}
+		const apiKey: string | undefined = vscode.workspace.getConfiguration('devxai').get('ApiKey') as string | undefined;
+			const openai = new OpenAI({
+				apiKey: apiKey,
+			});  
+
 		if (model === "gpt-3.5-turbo" || model === "gpt-4") {
-			const response = await openai.createChatCompletion({
+			const response = await openai.chat.completions.create({
 				model: model,
 				messages: chatGPTPrompt,
 				temperature: 1,
