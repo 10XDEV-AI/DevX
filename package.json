@@ -2,10 +2,14 @@
 	"name": "devxai",
 	"displayName": "DevX AI",
 	"description": "Edit with ChatGPT",
-	"version": "1.2.1",
-	"publisher": "10XDEV.AI",
+	"version": "0.0.1",
+	"publisher": "10XDEVAI",
 	"private": true,
 	"icon": "resources/chatbot.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/10XDEV-AI/DevX.git"
+	},	
 	"license": "Apache-2.0",
 	"engines": {
 		"vscode": "^1.65.0"

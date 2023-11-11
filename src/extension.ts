@@ -21,6 +21,7 @@ class NoteComment implements vscode.Comment {
 	}
 }
 
+
 /**
  * Shows an input box for getting API key using window.showInputBox().
  * Checks if inputted API Key is valid.
@@ -33,14 +34,14 @@ export async function showInputBox() {
 		title: 'DevX Copilot',
 		prompt: 'You have not set your OpenAI API key yet or your API key is incorrect, please enter your API key to use the DevX AI extension.',
 		validateInput: async text => {
-			vscode.window.showInformationMessage(`Validating: ${text}`);
+			
 			if (text === '') {
 				return 'The API Key can not be empty';
 			}
-			
-			const apiKey: string | undefined = vscode.workspace.getConfiguration('devxai').get('ApiKey') as string | undefined;
+
+			console.log('Hi');
 			const openai = new OpenAI({
-				apiKey: apiKey,
+				apiKey: text,
 			});  
 
 			try {
@@ -94,6 +95,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		const apiKey = await showInputBox();
 		await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
 	}
+
 	
 	// A `CommentController` is able to provide comments for documents.
 	const commentController = vscode.comments.createCommentController('comment-devxai', 'devxai Comment Controller');
@@ -217,41 +219,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('mywiki.dispose', () => {
 		commentController.dispose();
 	}));
-
-
-	/**
-	 * Generates the prompt to pass to OpenAI ChatGPT API.
-	 * Prompt includes: 
-	 * - Role play text that gives context to AI
-	 * - Code block highlighted for the comment thread
-	 * - All of past conversation history + example conversation
-	 * - User's new question
-	 * @param question
-	 * @param thread 
-	 * @returns 
-	 */
-	async function generatePromptChatGPT(question: string, thread: vscode.CommentThread) {
-		const messages = [];
-		//const rolePlay =
-		//	"I want you to act as a highly intelligent AI chatbot that has deep understanding of any coding language and its API documentations. I will provide you with a code block and your role is to provide a comprehensive answer to any questions or requests that I will ask about the code block. Please answer in as much detail as possible and not be limited to brevity. It is very important that you provide verbose answers and answer in markdown format.";
-		const codeBlock = await getCommentThreadCode(thread);
-		if (codeBlock !== undefined) {
-			messages.push({"role" : "user", "content" : "```\n" + codeBlock + "\n```"});
-		}
-		const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
-
-		for (let i = Math.max(0, filteredComments.length - 8); i < filteredComments.length; i++) {
-				if (filteredComments[i].author.name === "VS Code") {
-					messages.push({"role" : "user", "content" : `${(filteredComments[i].body as vscode.MarkdownString).value}`});
-				} else if (filteredComments[i].author.name === "DEVX AI") {
-					messages.push({"role" : "assistant", "content" : `${(filteredComments[i].body as vscode.MarkdownString).value}`});
-				}
-		}
-		messages.push({"role" : "user", "content" : `${question}`});
-
-		return messages; 
-	}
-    
 	
 
 	/**
@@ -312,9 +279,25 @@ export async function activate(context: vscode.ExtensionContext) {
 		const thread = reply.thread;
 		const model = vscode.workspace.getConfiguration('devxai').get('models') + "";
 		
-		let chatGPTPrompt = [];
-		chatGPTPrompt = await generatePromptChatGPT(question, thread);
+		const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+		];
+
+		const codeBlock = await getCommentThreadCode(thread);
 		
+		messages.push({"role" : "system", "content" : "Return fully edited code as per user request delimitted by tripple quotes and nothing else."});
+		messages.push({"role" : "user", "content" : "```\n" + codeBlock + "\n```"});
+		
+		const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
+
+		for (let i = Math.max(0, filteredComments.length - 8); i < filteredComments.length; i++) {
+				if (filteredComments[i].author.name === "VS Code") {
+					messages.push({"role" : "user", "content" : `${(filteredComments[i].body as vscode.MarkdownString).value}`});
+				} else if (filteredComments[i].author.name === "DEVX AI") {
+					messages.push({"role" : "assistant", "content" : `${(filteredComments[i].body as vscode.MarkdownString).value}`});
+				}
+		}
+		messages.push({"role" : "user", "content" : `${question}`});
+
 		const humanComment = new NoteComment(new vscode.MarkdownString(question), vscode.CommentMode.Preview, { name: 'VS Code', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 		thread.comments = [...thread.comments, humanComment];
 		
@@ -325,16 +308,16 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		if (model === "gpt-3.5-turbo" || model === "gpt-4") {
 			const response = await openai.chat.completions.create({
-				model: model,
-				messages: chatGPTPrompt,
+				model: "gpt-3.5-turbo",
+				messages : messages,
 				temperature: 1,
-				max_tokens: 1000,
-				top_p: 1.0,
-				frequency_penalty: 1,
-				presence_penalty: 1,
+				max_tokens: 256,
+				top_p: 1,
+				frequency_penalty: 0,
+				presence_penalty: 0,
 			});
 
-			const responseText = response.data.choices[0].message?.content ? response.data.choices[0].message?.content : 'An error occured. Please try again...';
+			const responseText = response.choices[0].message?.content ? response.choices[0].message?.content : 'An error occured. Please try again...';
 			
 			const AIComment = new NoteComment(new vscode.MarkdownString(responseText.trim()), vscode.CommentMode.Preview, { name: 'DevX AI', iconPath: vscode.Uri.parse("https://i.postimg.cc/Y21dmVTh/Vector.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 			thread.comments = [...thread.comments, AIComment];
@@ -355,9 +338,29 @@ export async function activate(context: vscode.ExtensionContext) {
 		const thread = reply.thread;
 		const model = vscode.workspace.getConfiguration('devxai').get('models') + "";
 		
-		let chatGPTPrompt = [];
-		chatGPTPrompt = await generatePromptChatGPTEdit(question, thread);
+		// let chatGPTPrompt = [];
+		// chatGPTPrompt = await generatePromptChatGPTEdit(question, thread);
+		const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+		];
+
+		//const rolePlay =
+		//	"I want you to act as a highly intelligent AI chatbot that has deep understanding of any coding language and its API documentations. I will provide you with a code block and your role is to provide a comprehensive answer to any questions or requests that I will ask about the code block. Please answer in as much detail as possible and not be limited to brevity. It is very important that you provide verbose answers and answer in markdown format.";
+		const codeBlock = await getCommentThreadCode(thread);
 		
+		messages.push({"role" : "system", "content" : "Return fully edited code as per user request delimitted by tripple quotes and nothing else."});
+		messages.push({"role" : "user", "content" : "```\n" + codeBlock + "\n```"});
+		
+		const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
+
+		for (let i = Math.max(0, filteredComments.length - 8); i < filteredComments.length; i++) {
+				if (filteredComments[i].author.name === "VS Code") {
+					messages.push({"role" : "user", "content" : `${(filteredComments[i].body as vscode.MarkdownString).value}`});
+				} else if (filteredComments[i].author.name === "DEVX AI") {
+					messages.push({"role" : "assistant", "content" : `${(filteredComments[i].body as vscode.MarkdownString).value}`});
+				}
+		}
+		messages.push({"role" : "user", "content" : `${question}`});
+
 		const apiKey: string | undefined = vscode.workspace.getConfiguration('devxai').get('ApiKey') as string | undefined;
 			const openai = new OpenAI({
 				apiKey: apiKey,
@@ -365,41 +368,40 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		if (model === "gpt-3.5-turbo" || model === "gpt-4") {
 			const response = await openai.chat.completions.create({
-				model: model,
-				messages: chatGPTPrompt,
-				temperature: 1,
-				max_tokens: 1000,
-				top_p: 1.0,
-				frequency_penalty: 1,
-				presence_penalty: 1,
+				messages: messages,
+				model: "gpt-3.5-turbo",
 			});
 
-			const responseText = response.data.choices[0].message?.content ? response.data.choices[0].message?.content : 'An error occurred. Please try again...';
+		const responseText = response.choices[0].message?.content ? response.choices[0].message?.content : 'An error occured. Please try again...';
+			
+		if (responseText) {
+			const tripleTicks = '```';
+			const firstTicksIndex = responseText.indexOf(tripleTicks);
+			const lastTicksIndex = responseText.lastIndexOf(tripleTicks);
+			if (firstTicksIndex !== -1 && lastTicksIndex !== -1 && firstTicksIndex < lastTicksIndex) {
+				let contentBetweenTicks = responseText.substring(firstTicksIndex + tripleTicks.length, lastTicksIndex);
+				if (! contentBetweenTicks.startsWith('\n')){
+						const firstslashn = contentBetweenTicks.indexOf('\n');
+						//return code after slash n
+						contentBetweenTicks = contentBetweenTicks.substring(firstslashn);
 
-			if (responseText) {
-				const tripleTicks = '```';
-				const firstTicksIndex = responseText.indexOf(tripleTicks);
-				const lastTicksIndex = responseText.lastIndexOf(tripleTicks);
-
-				if (firstTicksIndex !== -1 && lastTicksIndex !== -1 && firstTicksIndex < lastTicksIndex) {
-					const contentBetweenTicks = responseText.substring(firstTicksIndex + tripleTicks.length, lastTicksIndex);
-
-					const editor = await vscode.window.showTextDocument(thread.uri);
-
-					if (!editor) {
-						return; // No open text editor
-					}
-
-					editor.edit(editBuilder => {
-						editBuilder.replace(thread.range, contentBetweenTicks);
-					});
-				} else {
-					vscode.window.showErrorMessage('Unable to find content between triple ticks.');
 				}
+				const editor = await vscode.window.showTextDocument(thread.uri);
+
+				if (!editor) {
+					return;
+				}
+
+				editor.edit(editBuilder => {
+					editBuilder.replace(thread.range, contentBetweenTicks);
+				});
 			} else {
-				vscode.window.showErrorMessage('An error occurred. Please try again...');
+				vscode.window.showErrorMessage('Unable to find content between triple ticks.');
 			}
-			} 
+		} else {
+			vscode.window.showErrorMessage('An error occurred. Please try again...');
+		}
+		} 
 	}
 	}
 
