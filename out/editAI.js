@@ -35,11 +35,7 @@ async function aiEdit(reply) {
     //remove empty lines from the beginning and end of codeBlock
     codeBlock = codeBlock.replace(/^\s*[\r\n]/gm, '').replace(/[\r\n]\s*$/gm, '');
     const commonIndent = findCommonIndent(codeBlock);
-    const codeLines = codeBlock.split('\n');
-    for (let i = 0; i < codeLines.length; i++) {
-        codeLines[i] = codeLines[i].replace(commonIndent, '');
-    }
-    codeBlock = codeLines.join('\n');
+    codeBlock = codeBlock.replace(new RegExp('^' + commonIndent, 'gm'), '');
     messages.push({ "role": "system", "content": "Return fully edited code as per user request delimitted by tripple quotes and nothing else." });
     messages.push({ "role": "user", "content": "```\n" + codeBlock + "\n```" });
     const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");

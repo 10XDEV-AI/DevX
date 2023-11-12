@@ -43,11 +43,8 @@ import OpenAI from "openai";
 		codeBlock = codeBlock.replace(/^\s*[\r\n]/gm, '').replace(/[\r\n]\s*$/gm, '');
 		
 		const commonIndent = findCommonIndent(codeBlock);
-		const codeLines = codeBlock.split('\n');
-		for (let i = 0; i < codeLines.length; i++) {
-			codeLines[i] = codeLines[i].replace(commonIndent,'');
-		}
-		codeBlock = codeLines.join('\n');
+		codeBlock = codeBlock.replace(new RegExp('^' + commonIndent, 'gm'), '');
+
 		messages.push({"role": "system", "content": "Return fully edited code as per user request delimitted by tripple quotes and nothing else."});
 		messages.push({"role": "user", "content": "```\n" + codeBlock + "\n```"});	
 
@@ -126,7 +123,8 @@ import OpenAI from "openai";
 							"julia",
 							"racket",
 							"nim",
-							"d"
+							"d",
+							"gitignore"
 						];
 						// check if content starts  with any of these languages and a \n
 						for (let i = 0; i < languages.length; i++) {
