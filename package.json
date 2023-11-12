@@ -165,20 +165,16 @@
 				}
 			]
 		},
-		"keybindings": [
-			{
-				"command": "mywiki.askAI",
-				"key": "ctrl+i ctrl+o",
-				"mac": "cmd+i cmd+o",
-				"when": "editorFocus && commentController == comment-devxai"
-			},
-			{
-				"command": "mywiki.inline.new",
-				"key": "ctrl+shift+c",
-				"mac": "cmd+c cmd+d",
-				"when": "editorFocus && commentController == comment-devxai"
-			}
-		],
+		
+"keybindings": [
+	{
+		"command": "mywiki.inline.new",
+		"key": "ctrl+option+d",
+		"mac": "cmd+option+d",
+		"when": "editorFocus && commentController == comment-devxai"
+	}
+],
+		
 		"configuration": {
 			"title": "devxai",
 			"properties": {
