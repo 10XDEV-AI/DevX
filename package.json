@@ -2,7 +2,7 @@
 	"name": "devxai",
 	"displayName": "DevX AI",
 	"description": "Edit with ChatGPT",
-	"version": "0.0.1",
+	"version": "0.0.3",
 	"publisher": "10XDEVAI",
 	"private": true,
 	"icon": "resources/chatbot.png",

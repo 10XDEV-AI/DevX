@@ -1,5 +1,5 @@
 <div align="center" id="madewithlua">
-    <img src="./resources/chatbot.png" width=200>
+    <img src="https://i.postimg.cc/Y21dmVTh/Vector.png" width=100>
 </div>
 
 <h1 align="center">DevX AI</h1>
