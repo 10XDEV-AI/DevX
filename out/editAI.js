@@ -110,7 +110,8 @@ async function aiEdit(reply) {
                         "julia",
                         "racket",
                         "nim",
-                        "d"
+                        "d",
+                        "gitignore"
                     ];
                     // check if content starts  with any of these languages and a \n
                     for (let i = 0; i < languages.length; i++) {

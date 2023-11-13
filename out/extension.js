@@ -102,12 +102,13 @@ async function activate(context) {
     };
     let thread;
     vscode.window.onDidChangeTextEditorSelection(async (e) => {
-        if (thread !== undefined) {
-            if (!e.textEditor.document.fileName.startsWith('/commentinput')) {
-                thread.dispose();
-                thread = undefined;
-            }
-        }
+        console.log(e.textEditor.document.fileName);
+        // 	if (thread !== undefined) {
+        // 			if (!e.textEditor.document.fileName.startsWith('/commentinput')) {
+        // 				thread.dispose();
+        // 				thread = undefined;
+        // 			}
+        // 		}
     });
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply) => {
         vscode.window.withProgress({

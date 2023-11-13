@@ -119,12 +119,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	let thread: vscode.CommentThread | undefined;
 
 	vscode.window.onDidChangeTextEditorSelection(async (e) => {
+		//console.log(e.textEditor.document.fileName);
 		if (thread !== undefined) {
-				if (!e.textEditor.document.fileName.startsWith('/commentinput')) {
-					thread.dispose();
-					thread = undefined;
-				}
+			if (!e.textEditor.document.fileName.includes('commentinput')) {
+				thread.dispose();
+				thread = undefined;
 			}
+		}
 	});
     
 	context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply: vscode.CommentReply) => {
