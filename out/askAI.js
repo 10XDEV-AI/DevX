@@ -38,7 +38,6 @@ async function askAI(reply) {
     const model = vscode.workspace.getConfiguration('devxai').get('models') + "";
     const messages = [];
     const codeBlock = await getCommentThreadCode(thread);
-    messages.push({ "role": "system", "content": "Return fully edited code as per user request delimitted by tripple quotes and nothing else." });
     messages.push({ "role": "user", "content": "```\n" + codeBlock + "\n```" });
     const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
     for (let i = Math.max(0, filteredComments.length - 8); i < filteredComments.length; i++) {

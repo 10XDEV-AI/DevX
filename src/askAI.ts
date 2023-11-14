@@ -44,7 +44,6 @@ async function updateThread(answerString: string, thread: vscode.CommentThread) 
 
 		const codeBlock = await getCommentThreadCode(thread);
 		
-		messages.push({"role" : "system", "content" : "Return fully edited code as per user request delimitted by tripple quotes and nothing else."});
 		messages.push({"role" : "user", "content" : "```\n" + codeBlock + "\n```"});
 		
 		const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
