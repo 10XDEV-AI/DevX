@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import OpenAI from "openai";
 import { aiEdit } from './editAI';
 import { askAI } from './askAI';
+import { HelloWorldPanel } from "./panels/HelloWorldPanel";
 let commentId = 1;
 
 export class NoteComment implements vscode.Comment {
