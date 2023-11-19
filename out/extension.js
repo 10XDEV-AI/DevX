@@ -1,7 +1,9 @@
-'use strict';
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = exports.showInputBox = exports.NoteComment = void 0;
+const vscode_1 = require("vscode");
 const vscode = require("vscode");
+const HelloWorldPanel_1 = require("./panels/HelloWorldPanel");
 const openai_1 = require("openai");
 const editAI_1 = require("./editAI");
 const askAI_1 = require("./askAI");
@@ -80,6 +82,12 @@ async function validateAPIKey() {
     return true;
 }
 async function activate(context) {
+    // Create the show hello world command
+    const showHelloWorldCommand = vscode_1.commands.registerCommand("hello-world.showHelloWorld", () => {
+        HelloWorldPanel_1.HelloWorldPanel.render(context.extensionUri);
+    });
+    // Add command to the extension context
+    context.subscriptions.push(showHelloWorldCommand);
     // Workspace settings override User settings when getting the setting.
     if (vscode.workspace.getConfiguration('devxai').get('ApiKey') === ""
         || !(await validateAPIKey())) {
@@ -102,13 +110,13 @@ async function activate(context) {
     };
     let thread;
     vscode.window.onDidChangeTextEditorSelection(async (e) => {
-        console.log(e.textEditor.document.fileName);
-        // 	if (thread !== undefined) {
-        // 			if (!e.textEditor.document.fileName.startsWith('/commentinput')) {
-        // 				thread.dispose();
-        // 				thread = undefined;
-        // 			}
-        // 		}
+        //console.log(e.textEditor.document.fileName);
+        if (thread !== undefined) {
+            if (!e.textEditor.document.fileName.includes('commentinput')) {
+                thread.dispose();
+                thread = undefined;
+            }
+        }
     });
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply) => {
         vscode.window.withProgress({

@@ -1,221 +1,232 @@
 {
-	"name": "devxai",
-	"displayName": "DevX AI",
-	"description": "Edit with ChatGPT",
-	"version": "0.0.4",
-	"publisher": "10XDEVAI",
-	"private": true,
-	"icon": "resources/chatbot.png",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/10XDEV-AI/DevX.git"
-	},	
-	"license": "Apache-2.0",
-	"engines": {
-		"vscode": "^1.65.0"
-	},
-	"sponsor": {
-		"url": "https://ko-fi.com/pixelperfectlabs"
-	},
-	"categories": [
-		"Programming Languages",
-		"Snippets",
-		"Other",
-		"Machine Learning",
-		"Notebooks"
-	],
-	"keywords": [
-		"chatgpt",
-		"gpt3",
-		"gpt3.5",
-		"gpt4",
-		"openai",
-		"copilot",
-		"ai",
-		"refactor",
-		"bard",
-		"completion",
-		"javascript",
-		"typescript",
-		"web development"
-	],
-	"galleryBanner": {
-		"color": "#041621",
-		"theme": "dark"
-	},
-	"activationEvents": [
-		"onStartupFinished"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "mywiki.askAI",
-				"title": "Ask AI"
-			},
-			{
-				"command": "mywiki.aiEdit",
-				"title": "AI Edit"
-			},
-			{
-				"command": "mywiki.editNote",
-				"title": "Edit",
-				"icon": {
-					"dark": "resources/edit_inverse.svg",
-					"light": "resources/edit.svg"
-				}
-			},
-			{
-				"command": "mywiki.deleteNote",
-				"title": "Delete",
-				"icon": {
-					"dark": "resources/close_inverse.svg",
-					"light": "resources/close.svg"
-				}
-			},
-			{
-				"command": "mywiki.deleteNoteComment",
-				"title": "Delete",
-				"icon": {
-					"dark": "resources/close_inverse.svg",
-					"light": "resources/close.svg"
-				}
-			},
-			{
-				"command": "mywiki.saveNote",
-				"title": "Save"
-			},
-			{
-				"command": "mywiki.cancelsaveNote",
-				"title": "Cancel"
-			},
-			{
-				"command": "mywiki.dispose",
-				"title": "Remove All Notes"
-			},
-			{
-				"command": "mywiki.inline.new",
-				"title": "Ask DevX Inline"
-			}
-		],
-		"menus": {
-			"commandPalette": [
-				{
-					"command": "mywiki.askAI",
-					"when": "false"
-				},
-				{
-					"command": "mywiki.aiEdit",
-					"when": "false"
-				},
-				{
-					"command": "mywiki.deleteNote",
-					"when": "false"
-				},
-				{
-					"command": "mywiki.deleteNoteComment",
-					"when": "false"
-				},
-				{
-					"command": "mywiki.inline.new",
-					"when": "false"
-				}
-			],
-			"comments/commentThread/title": [
-				{
-					"command": "mywiki.deleteNote",
-					"group": "navigation",
-					"when": "commentController == comment-devxai && !commentThreadIsEmpty"
-				}
-			],
-			"comments/commentThread/context": [
-				{
-					"command": "mywiki.askAI",
-					"group": "inline@1",
-					"when": "commentController == comment-devxai"
-				},
-				{
-					"command": "mywiki.aiEdit",
-					"group": "inline@2",
-					"when": "commentController == comment-devxai"
-				}
-			],
-			"comments/comment/title": [
-				{
-					"command": "mywiki.editNote",
-					"group": "group@1",
-					"when": "commentController == comment-devxai"
-				},
-				{
-					"command": "mywiki.deleteNoteComment",
-					"group": "group@2",
-					"when": "commentController == comment-devxai && comment == canDelete"
-				}
-			],
-			"comments/comment/context": [
-				{
-					"command": "mywiki.cancelsaveNote",
-					"group": "inline@1",
-					"when": "commentController == comment-devxai"
-				},
-				{
-					"command": "mywiki.saveNote",
-					"group": "inline@2",
-					"when": "commentController == comment-devxai"
-				}
-			]
-		},
-		
-"keybindings": [
-	{
-		"command": "mywiki.inline.new",
-		"key": "ctrl+option+d",
-		"mac": "cmd+option+d",
-		"when": "editorFocus && commentController == comment-devxai"
-	}
-],
-		
-		"configuration": {
-			"title": "devxai",
-			"properties": {
-				"devxai.ApiKey": {
-					"type": "string",
-					"default": "",
-					"scope": "application",
-					"markdownDescription": "Your personal OpenAI API key. If you don't have one, generate a new one [here](https://beta.openai.com/account/api-keys).\n\nDon't forget to [restart your extension](command:workbench.action.reloadWindow) once you finished configuring so that your extension gets loaded with the new configurations."
-				},
-				"devxai.models": {
-					"type": "string",
-					"default": "gpt-3.5-turbo",
-					"enum": [
-						"gpt-3.5-turbo",
-						"gpt-4"
-					],
-					"enumDescriptions": [
-						"GPT-3 models can understand and generate natural language.",
-						"Large language model trained by OpenAI that is optimized for dialogue.",
-						"Large language model that performs better than ChatGPT. Only available for people that have access to GPT4."
-					],
-					"markdownDescription": "Choose the OpenAI model you want to use for generating your AI responses.\n\nYou can find more details about each model and their pricing [here](https://beta.openai.com/docs/models)."
-				}
-			}
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"lint": "eslint \"src/**/*.ts\""
-	},
-	"devDependencies": {
-		"@types/node": "^16.18.33",
-		"@types/vscode": "~1.65.0",
-		"@typescript-eslint/eslint-plugin": "^5.59.7",
-		"@typescript-eslint/parser": "^5.59.7",
-		"eslint": "^8.41.0",
-		"typescript": "^4.9.5"
-	},
-	"dependencies": {
-		"openai": "^4.17.3"
-	}
+  "name": "devxai",
+  "displayName": "DevX AI",
+  "description": "Edit with ChatGPT",
+  "version": "0.0.4",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other",
+    "Machine Learning",
+    "Notebooks"
+  ],
+  "keywords": [
+    "chatgpt",
+    "gpt3",
+    "gpt3.5",
+    "gpt4",
+    "openai",
+    "copilot",
+    "ai",
+    "refactor",
+    "bard",
+    "completion",
+    "javascript",
+    "typescript",
+    "web development"
+  ],
+  "galleryBanner": {
+    "color": "#041621",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "publisher": "10XDEVAI",
+  "private": true,
+  "icon": "resources/chatbot.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/10XDEV-AI/DevX.git"
+  },
+  "license": "Apache-2.0",
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "hello-world.showHelloWorld",
+        "title": "Hello World (React + CRA): Show"
+      },
+      {
+        "command": "mywiki.askAI",
+        "title": "Ask AI"
+      },
+      {
+        "command": "mywiki.aiEdit",
+        "title": "AI Edit"
+      },
+      {
+        "command": "mywiki.editNote",
+        "title": "Edit",
+        "icon": {
+          "dark": "resources/edit_inverse.svg",
+          "light": "resources/edit.svg"
+        }
+      },
+      {
+        "command": "mywiki.deleteNote",
+        "title": "Delete",
+        "icon": {
+          "dark": "resources/close_inverse.svg",
+          "light": "resources/close.svg"
+        }
+      },
+      {
+        "command": "mywiki.deleteNoteComment",
+        "title": "Delete",
+        "icon": {
+          "dark": "resources/close_inverse.svg",
+          "light": "resources/close.svg"
+        }
+      },
+      {
+        "command": "mywiki.saveNote",
+        "title": "Save"
+      },
+      {
+        "command": "mywiki.cancelsaveNote",
+        "title": "Cancel"
+      },
+      {
+        "command": "mywiki.dispose",
+        "title": "Remove All Notes"
+      },
+      {
+        "command": "mywiki.inline.new",
+        "title": "Ask DevX Inline"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "mywiki.askAI",
+          "when": "false"
+        },
+        {
+          "command": "mywiki.aiEdit",
+          "when": "false"
+        },
+        {
+          "command": "mywiki.deleteNote",
+          "when": "false"
+        },
+        {
+          "command": "mywiki.deleteNoteComment",
+          "when": "false"
+        },
+        {
+          "command": "mywiki.inline.new",
+          "when": "false"
+        }
+      ],
+      "comments/commentThread/title": [
+        {
+          "command": "mywiki.deleteNote",
+          "group": "navigation",
+          "when": "commentController == comment-devxai && !commentThreadIsEmpty"
+        }
+      ],
+      "comments/commentThread/context": [
+        {
+          "command": "mywiki.askAI",
+          "group": "inline@1",
+          "when": "commentController == comment-devxai"
+        },
+        {
+          "command": "mywiki.aiEdit",
+          "group": "inline@2",
+          "when": "commentController == comment-devxai"
+        }
+      ],
+      "comments/comment/title": [
+        {
+          "command": "mywiki.editNote",
+          "group": "group@1",
+          "when": "commentController == comment-devxai"
+        },
+        {
+          "command": "mywiki.deleteNoteComment",
+          "group": "group@2",
+          "when": "commentController == comment-devxai && comment == canDelete"
+        }
+      ],
+      "comments/comment/context": [
+        {
+          "command": "mywiki.cancelsaveNote",
+          "group": "inline@1",
+          "when": "commentController == comment-devxai"
+        },
+        {
+          "command": "mywiki.saveNote",
+          "group": "inline@2",
+          "when": "commentController == comment-devxai"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "mywiki.inline.new",
+        "key": "ctrl+option+d",
+        "mac": "cmd+option+d",
+        "when": "editorFocus && commentController == comment-devxai"
+      }
+    ],
+    "configuration": {
+      "title": "devxai",
+      "properties": {
+        "devxai.ApiKey": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "markdownDescription": "Your personal OpenAI API key. If you don't have one, generate a new one [here](https://beta.openai.com/account/api-keys).\n\nDon't forget to [restart your extension](command:workbench.action.reloadWindow) once you finished configuring so that your extension gets loaded with the new configurations."
+        },
+        "devxai.models": {
+          "type": "string",
+          "default": "gpt-3.5-turbo",
+          "enum": [
+            "gpt-3.5-turbo",
+            "gpt-4"
+          ],
+          "enumDescriptions": [
+            "GPT-3 models can understand and generate natural language.",
+            "Large language model trained by OpenAI that is optimized for dialogue.",
+            "Large language model that performs better than ChatGPT. Only available for people that have access to GPT4."
+          ],
+          "markdownDescription": "Choose the OpenAI model you want to use for generating your AI responses.\n\nYou can find more details about each model and their pricing [here](https://beta.openai.com/docs/models)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "install:all": "npm install && cd webview-ui && npm install",
+    "start:webview": "cd webview-ui && npm run start",
+    "build:webview": "cd webview-ui && npm run build",
+    "test:webview": "cd webview-ui && npm run test",
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.3",
+    "@types/mocha": "^10.0.4",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.46.0",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "eslint": "^7.19.0",
+    "glob": "^7.1.6",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.3",
+    "vscode-test": "^1.5.0"
+  },
+  "dependencies": {
+    "mocha": "^10.2.0",
+    "openai": "^4.19.0"
+  },
+  "eslintIgnore": ["node_modules/**"]
 }
