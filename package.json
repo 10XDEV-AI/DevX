@@ -50,7 +50,7 @@
          {
             "id": "DevX",
             "title": "DevX",
-            "icon": "$(heart)"
+            "icon": "./assets/x.svg"
          }
       ]
    },
