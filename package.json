@@ -45,10 +45,29 @@
   "license": "Apache-2.0",
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+         {
+            "id": "DevX",
+            "title": "DevX",
+            "icon": "$(heart)"
+         }
+      ]
+   },
+   "views": {
+    "DevX" : [
+      {
+        "id": "DevX",
+        "name": "DevX",
+        "type": "webview",
+        "icon": "$hello"
+      }
+    ]
+   },
     "commands": [
       {
         "command": "hello-world.showHelloWorld",
-        "title": "Hello World (React + CRA): Show"
+        "title": "Open DevX"
       },
       {
         "command": "mywiki.askAI",
