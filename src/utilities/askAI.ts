@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import OpenAI from "openai";
-import { NoteComment } from './extension';
+import { NoteComment } from '../extension';
 
 	/**
 	 * Gets the highlighted code for this comment thread

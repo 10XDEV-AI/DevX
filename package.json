@@ -188,9 +188,9 @@
     "keybindings": [
       {
         "command": "mywiki.inline.new",
-        "key": "ctrl+option+d",
-        "mac": "cmd+option+d",
-        "when": "editorFocus && commentController == comment-devxai"
+        "key": "ctrl+f ctrl+d",
+        "mac": "cmd+k cmd+d",
+        "when": "editorTextFocus"
       }
     ],
     "configuration": {
