@@ -2,7 +2,7 @@
   "name": "devxai",
   "displayName": "DevX AI",
   "description": "Edit with ChatGPT",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "engines": {
     "vscode": "^1.75.0"
   },
@@ -116,6 +116,14 @@
       {
         "command": "mywiki.inline.new",
         "title": "Ask DevX Inline"
+      },
+      {
+        "command": "mywiki.addFile",
+        "title": "Add File to DevX"
+      },
+      {
+        "command": "mywiki.addSelection",
+        "title": "Add Selection to DevX"
       }
     ],
     "menus": {
@@ -183,7 +191,19 @@
           "group": "inline@2",
           "when": "commentController == comment-devxai"
         }
-      ]
+      ],
+      "editor/context": [
+        {
+            "command": "mywiki.addFile",
+            "group": "navigation",
+            "when": "(!editorTextFocus || !editorHasSelection)"
+        },
+        {
+          "command": "mywiki.addSelection",
+          "title": "Add Selection to DevX",
+          "when": "editorTextFocus && editorHasSelection"
+        }
+    ]
     },
     "keybindings": [
       {

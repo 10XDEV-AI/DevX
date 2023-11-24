@@ -145,6 +145,25 @@ context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (repl
   });
 }));
 
+
+context.subscriptions.push(vscode.commands.registerCommand('mywiki.addFile', (uri: vscode.Uri) => {
+  const editor = vscode.window.activeTextEditor;
+  if (editor) {
+      const filePath = editor.document.uri.fsPath;
+      console.log(`Adding file to DevX: ${filePath}`);
+  }
+}));
+
+context.subscriptions.push(vscode.commands.registerCommand('mywiki.addSelection', (uri: vscode.Uri) => {
+  const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const selectedText = editor.document.getText(editor.selection);
+            // Add logic to add the selected text to DevX
+            console.log(`Adding selection to DevX: ${selectedText}`);
+        }
+}));
+
+
 context.subscriptions.push(vscode.commands.registerCommand('mywiki.aiEdit', (reply: vscode.CommentReply) => {
   vscode.window.withProgress({
     location: vscode.ProgressLocation.Notification,
