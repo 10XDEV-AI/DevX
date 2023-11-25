@@ -1,35 +1,19 @@
-import React, { createContext, useContext, ReactNode, useState } from 'react';
-import { useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
+const DevXContext = createContext(undefined);
 
-interface DevXContextProps {
-  children: ReactNode;
-}
+export function DevXContextProvider({ children }) {
+  const [referencedFiles, setReferencedFiles] = useState([]);
 
-interface DevXContextValue {
-  addFile: (filePath: string, fileContents: string) => void;
-  referencedFiles: Record<string, { path: string; contents: string }>;
-}
-
-
-
-const DevXContext = createContext<DevXContextValue | undefined>(undefined);
-
-
-export function DevXContextProvider({ children }: DevXContextProps) {
-
-  const [referencedFiles, setReferencedFiles] = useState<Record<string, { path: string; contents: string }>>({});
-
-  const addFile = async (filePath: string, fileContents: string) => {
+  const addFile = async (filePath, fileContents) => {
     setReferencedFiles((prevFiles) => ({
       ...prevFiles,
       [filePath]: { path: filePath, contents: fileContents },
     }));
     console.log(`Adding file: ${filePath}, Contents: ${fileContents}`);
-    console.log(referencedFiles);
   };
 
-  const handleMessage = (event: MessageEvent) => {
+  const handleMessage = (event) => {
     const message = event.data;
 
     switch (message.type) {
@@ -50,6 +34,11 @@ export function DevXContextProvider({ children }: DevXContextProps) {
     };
   });
 
+
+  useEffect(() => {
+    console.log(referencedFiles);
+  }, [referencedFiles]); // Log referencedFiles whenever it changes
+
   const value = {
     addFile,
     referencedFiles,
@@ -57,6 +46,7 @@ export function DevXContextProvider({ children }: DevXContextProps) {
 
   return <DevXContext.Provider value={value}>{children}</DevXContext.Provider>;
 }
+
 export function useDevXContext() {
   const context = useContext(DevXContext);
   if (!context) {

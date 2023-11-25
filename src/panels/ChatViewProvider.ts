@@ -44,17 +44,17 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 	// 	}
 	// }
 
-	public addFile(fileName: string, fileContents: string) {
+	public addFile(filePath: string, fileContents: string) {
 	if (this._view) {
         this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-        this._view.webview.postMessage({ type: 'addFile', fileName, fileContents });
+        this._view.webview.postMessage({ type: 'addFile', filePath, fileContents });
 	}
 	}
 
-	public addSelection(fileName: string, fileContents: string) {
+	public addSelection(filePath: string, fileContents: string) {
 		if (this._view) {
 			this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-			this._view.webview.postMessage({ type: 'addFile', fileName, fileContents });
+			this._view.webview.postMessage({ type: 'addFile', filePath, fileContents });
 		}
 		}
 

@@ -8,7 +8,7 @@ function App() {
 
   return (
     <main className="flex h-screen flex-col items-center justify-center">
-      {referencedFiles ? (
+      {referencedFiles.length===0 ? (
         <div className="flex flex-col items-center my-auto">
           <div>
 
@@ -21,18 +21,38 @@ function App() {
             </svg>
           </div>
           <div className="text-xl mt-4">
-          {/* Add your files to DevX to edit or chat {
-              Object.values(referencedFiles).map((file: ReferencedFile, index: number) => (
-                <span key={index}>
-                  {file.path}
-                </span>
-              ))
-            } */}
+              Add your files to DevX to edit or chat 
+
+              <CopyBlock
+                text={"Hi"}
+                language={"jsx"}
+                lineProps={{ style: { marginBottom: "0px" } }}
+                showLineNumbers={false}
+                startingLineNumber={1}
+                theme={dracula}
+                codeBlock
+                wrapLines
+              />
           </div>
         </div>
       ) : (
         <div>
-          Hi!
+         {
+          Object.values(referencedFiles).map((file, index) => (
+            <span key={index}>
+              <CopyBlock
+                text={file.contents}
+                language={"jsx"}
+                lineProps={{ style: { marginBottom: "0px" } }}
+                showLineNumbers={false}
+                startingLineNumber={1}
+                theme={dracula}
+                codeBlock
+                wrapLines
+              />
+            </span>
+          ))
+          }
         </div>
       )}
       <div className="mt-auto mx-auto w-full">

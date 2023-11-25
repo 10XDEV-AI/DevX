@@ -137,7 +137,7 @@ async function activate(context) {
         if (editor) {
             const filePath = editor.document.uri.fsPath;
             const selectedText = editor.document.getText(editor.selection);
-            console.log(`Adding selection to DevX: ${selectedText}`);
+            console.log(`Adding selection to DevX: ${selectedText} from file ${filePath.toString()}`);
             provider.addSelection(filePath.toString(), selectedText);
         }
     }));

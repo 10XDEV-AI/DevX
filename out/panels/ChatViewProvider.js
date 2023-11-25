@@ -33,16 +33,16 @@ class ChatViewProvider {
     // 		this._view.webview.postMessage({ type: 'addColor' });
     // 	}
     // }
-    addFile(fileName, fileContents) {
+    addFile(filePath, fileContents) {
         if (this._view) {
             this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-            this._view.webview.postMessage({ type: 'addFile', fileName, fileContents });
+            this._view.webview.postMessage({ type: 'addFile', filePath, fileContents });
         }
     }
-    addSelection(fileName, fileContents) {
+    addSelection(filePath, fileContents) {
         if (this._view) {
             this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-            this._view.webview.postMessage({ type: 'addFile', fileName, fileContents });
+            this._view.webview.postMessage({ type: 'addFile', filePath, fileContents });
         }
     }
     _getHtmlForWebview(webview) {
