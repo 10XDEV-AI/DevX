@@ -104,6 +104,11 @@ export async function activate(context: ExtensionContext) {
 }
 
 
+const provider = new ChatViewProvider(context.extensionUri);
+
+context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider.viewType, provider));
+
+
 // A `CommentController` is able to provide comments for documents.
 const commentController = vscode.comments.createCommentController('comment-devxai', 'devxai Comment Controller');
 context.subscriptions.push(commentController);
@@ -150,16 +155,19 @@ context.subscriptions.push(vscode.commands.registerCommand('mywiki.addFile', (ur
   const editor = vscode.window.activeTextEditor;
   if (editor) {
       const filePath = editor.document.uri.fsPath;
+      const fileContents = editor.document.getText();
       console.log(`Adding file to DevX: ${filePath}`);
+      provider.addFile(filePath.toString(), fileContents);
   }
 }));
 
 context.subscriptions.push(vscode.commands.registerCommand('mywiki.addSelection', (uri: vscode.Uri) => {
   const editor = vscode.window.activeTextEditor;
         if (editor) {
+            const filePath = editor.document.uri.fsPath;
             const selectedText = editor.document.getText(editor.selection);
-            // Add logic to add the selected text to DevX
             console.log(`Adding selection to DevX: ${selectedText}`);
+            provider.addSelection(filePath.toString(), selectedText);
         }
 }));
 
@@ -246,11 +254,6 @@ context.subscriptions.push(vscode.commands.registerCommand('mywiki.editNote', (c
 context.subscriptions.push(vscode.commands.registerCommand('mywiki.dispose', () => {
   commentController.dispose();
 }));
-
-const provider = new ChatViewProvider(context.extensionUri);
-
-context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider(ChatViewProvider.viewType, provider));
 
 }
 

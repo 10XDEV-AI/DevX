@@ -87,6 +87,8 @@ async function activate(context) {
         const apiKey = await showInputBox();
         await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
     }
+    const provider = new ChatViewProvider_1.ChatViewProvider(context.extensionUri);
+    context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider_1.ChatViewProvider.viewType, provider));
     // A `CommentController` is able to provide comments for documents.
     const commentController = vscode.comments.createCommentController('comment-devxai', 'devxai Comment Controller');
     context.subscriptions.push(commentController);
@@ -125,15 +127,18 @@ async function activate(context) {
         const editor = vscode.window.activeTextEditor;
         if (editor) {
             const filePath = editor.document.uri.fsPath;
+            const fileContents = editor.document.getText();
             console.log(`Adding file to DevX: ${filePath}`);
+            provider.addFile(filePath.toString(), fileContents);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.addSelection', (uri) => {
         const editor = vscode.window.activeTextEditor;
         if (editor) {
+            const filePath = editor.document.uri.fsPath;
             const selectedText = editor.document.getText(editor.selection);
-            // Add logic to add the selected text to DevX
             console.log(`Adding selection to DevX: ${selectedText}`);
+            provider.addSelection(filePath.toString(), selectedText);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.aiEdit', (reply) => {
@@ -202,8 +207,6 @@ async function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.dispose', () => {
         commentController.dispose();
     }));
-    const provider = new ChatViewProvider_1.ChatViewProvider(context.extensionUri);
-    context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider_1.ChatViewProvider.viewType, provider));
 }
 exports.activate = activate;
 //# sourceMappingURL=extension.js.map

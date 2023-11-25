@@ -12,11 +12,7 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 		private readonly _extensionUri: vscode.Uri,
 	) { }
 
-	public resolveWebviewView(
-		webviewView: vscode.WebviewView,
-		context: vscode.WebviewViewResolveContext,
-		_token: vscode.CancellationToken,
-	) {
+	public resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext,_token: vscode.CancellationToken) {
 		this._view = webviewView;
 
 		webviewView.webview.options = {
@@ -48,6 +44,19 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 	// 	}
 	// }
 
+	public addFile(fileName: string, fileContents: string) {
+	if (this._view) {
+        this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
+        this._view.webview.postMessage({ type: 'addFile', fileName, fileContents });
+	}
+	}
+
+	public addSelection(fileName: string, fileContents: string) {
+		if (this._view) {
+			this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
+			this._view.webview.postMessage({ type: 'addFile', fileName, fileContents });
+		}
+		}
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
 		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
