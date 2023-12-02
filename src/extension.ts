@@ -1,9 +1,10 @@
-import { ExtensionContext } from "vscode";
+import { ExtensionContext, languages, commands, Disposable, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
 import OpenAI from "openai";
 import { aiEdit } from './utilities/editAI';
 import { askAI } from './utilities/askAI';
 import {ChatViewProvider} from './panels/ChatViewProvider';
+import { CodelensProvider } from './CodelensProvider';
 
 let commentId = 1;
  
@@ -23,7 +24,6 @@ export class NoteComment implements vscode.Comment {
 		this.savedBody = this.body;
 	}
 }
-
 
 
 /**
@@ -78,7 +78,6 @@ export async function showInputBox() {
 	return result;
 }
 
-
 async function validateAPIKey() {
 	try {
 		const apiKey: string | undefined = vscode.workspace.getConfiguration('devxai').get('ApiKey') as string | undefined;
@@ -93,167 +92,231 @@ async function validateAPIKey() {
 	return true;
 }
 
-
 export async function activate(context: ExtensionContext) {
+
+
 
   // Workspace settings override User settings when getting the setting.
 	if (vscode.workspace.getConfiguration('devxai').get('ApiKey') === "" 
   || !(await validateAPIKey())) {
-  const apiKey = await showInputBox();
-  await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
-}
-
-
-const provider = new ChatViewProvider(context.extensionUri);
-
-context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider.viewType, provider));
-
-
-// A `CommentController` is able to provide comments for documents.
-const commentController = vscode.comments.createCommentController('comment-devxai', 'devxai Comment Controller');
-context.subscriptions.push(commentController);
-
-
-// A `CommentingRangeProvider` controls where gutter decorations that allow adding comments are shown
-commentController.commentingRangeProvider = {
-  provideCommentingRanges: (document: vscode.TextDocument, token: vscode.CancellationToken) => {
-    const lineCount = document.lineCount;
-    return [new vscode.Range(0, 0, lineCount - 1, 0)];
+    const apiKey = await showInputBox();
+    await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
   }
-};
 
-commentController.options = {
-  prompt: "Ask DevX...",
-  placeHolder: "Ask me to edit or explain code"
-};
+  const codelensProvider = new CodelensProvider();
 
-let thread: vscode.CommentThread | undefined;
+  languages.registerCodeLensProvider("*", codelensProvider);
 
-vscode.window.onDidChangeTextEditorSelection(async (e) => {
-  //console.log(e.textEditor.document.fileName);
-  if (thread !== undefined) {
-    if (!e.textEditor.document.fileName.includes('commentinput')) {
+  const provider = new ChatViewProvider(context.extensionUri);
+
+  context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider.viewType, provider));
+
+
+  // A `CommentController` is able to provide comments for documents.
+  const commentController = vscode.comments.createCommentController('comment-devxai', 'devxai Comment Controller');
+  context.subscriptions.push(commentController);
+
+
+  // A `CommentingRangeProvider` controls where gutter decorations that allow adding comments are shown
+  commentController.commentingRangeProvider = {
+    provideCommentingRanges: (document: vscode.TextDocument, token: vscode.CancellationToken) => {
+      const lineCount = document.lineCount;
+      return [new vscode.Range(0, 0, lineCount - 1, 0)];
+    }
+  };
+
+  commentController.options = {
+    prompt: "Ask DevX...",
+    placeHolder: "Ask me to edit or explain code"
+  };
+
+  let thread: vscode.CommentThread | undefined;
+
+  vscode.window.onDidChangeTextEditorSelection(async (e) => {
+    //console.log(e.textEditor.document.fileName);
+    if (thread !== undefined) {
+      if (!e.textEditor.document.fileName.includes('commentinput')) {
+        thread.dispose();
+        thread = undefined;
+      }
+    }
+  });
+    
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply: vscode.CommentReply) => {
+    vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: "Generating AI response...",
+      cancellable: true
+    }, async () => {
+      await askAI(reply);		
+      thread = reply.thread;
+    });
+  }));
+
+
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.addFile', (uri: vscode.Uri) => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+        const filePath = editor.document.uri.fsPath;
+        const fileContents = editor.document.getText();
+        console.log(`Adding file to DevX: ${filePath}`);
+        provider.addFile(filePath.toString(), fileContents);
+    }
+  }));
+
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.addSelection', (uri: vscode.Uri) => {
+    const editor = vscode.window.activeTextEditor;
+          if (editor) {
+              const filePath = editor.document.uri.fsPath;
+              const selectedText = editor.document.getText(editor.selection);
+              console.log(`Adding selection to DevX: ${selectedText} from file ${filePath.toString()}`);
+              provider.addSelection(filePath.toString(), selectedText);
+          }
+  }));
+
+
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.aiEdit', (reply: vscode.CommentReply) => {
+    vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: "Generating AI response...",
+      cancellable: true
+    }, async () => {
+      await aiEdit(reply);
+      thread = reply.thread;
+    });
+  }));
+
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.Accept', (uri: vscode.Uri, range: vscode.Range) => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+    const rangeText = editor.document.getText(range);
+    console.log(`Accepting: ${rangeText}`);
+    const lines = rangeText.split('\n');
+    const linesToAccept: string[] = [];
+    for (const line of lines) {
+      if (line.startsWith('+')|| line.startsWith(' ')){ 
+        linesToAccept.push(line.substring(1));
+      }
+    }
+    editor.edit(editBuilder => {
+      editBuilder.replace(range, linesToAccept.join('\n'));
+    });
+    }
+  }));
+
+
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.Reject', (uri: vscode.Uri, range: vscode.Range) => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+    const rangeText = editor.document.getText(range);
+    console.log(`Accepting: ${rangeText}`);
+    const lines = rangeText.split('\n');
+    const linesToAccept: string[] = [];
+    for (const line of lines) {
+      if (line.startsWith('-')|| line.startsWith(' ')){ 
+        linesToAccept.push(line.substring(1));
+      }
+    }
+    editor.edit(editBuilder => {
+      editBuilder.replace(range, linesToAccept.join('\n'));
+    });
+    }
+  }));
+
+
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.Merge', (uri: vscode.Uri, range: vscode.Range) => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+    const rangeText = editor.document.getText(range);
+    console.log(`Accepting: ${rangeText}`);
+    const lines = rangeText.split('\n');
+    const linesToAccept: string[] = [];
+    for (const line of lines) {
+      if (line.startsWith('+')|| line.startsWith('-')){ 
+        linesToAccept.push(line.substring(1));
+      }
+    }
+    editor.edit(editBuilder => {
+      editBuilder.replace(range, linesToAccept.join('\n'));
+    });
+    }
+  }));
+
+
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.deleteNoteComment', (comment: NoteComment) => {
+    const thread = comment.parent;
+    if (!thread) {
+      return;
+    }
+
+    thread.comments = thread.comments.filter(cmt => (cmt as NoteComment).id !== comment.id);
+
+    if (thread.comments.length === 0) {
       thread.dispose();
-      thread = undefined;
     }
-  }
-});
-  
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply: vscode.CommentReply) => {
-  vscode.window.withProgress({
-    location: vscode.ProgressLocation.Notification,
-    title: "Generating AI response...",
-    cancellable: true
-  }, async () => {
-    await askAI(reply);		
-    thread = reply.thread;
-  });
-}));
+  }));
 
-
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.addFile', (uri: vscode.Uri) => {
-  const editor = vscode.window.activeTextEditor;
-  if (editor) {
-      const filePath = editor.document.uri.fsPath;
-      const fileContents = editor.document.getText();
-      console.log(`Adding file to DevX: ${filePath}`);
-      provider.addFile(filePath.toString(), fileContents);
-  }
-}));
-
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.addSelection', (uri: vscode.Uri) => {
-  const editor = vscode.window.activeTextEditor;
-        if (editor) {
-            const filePath = editor.document.uri.fsPath;
-            const selectedText = editor.document.getText(editor.selection);
-            console.log(`Adding selection to DevX: ${selectedText} from file ${filePath.toString()}`);
-            provider.addSelection(filePath.toString(), selectedText);
-        }
-}));
-
-
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.aiEdit', (reply: vscode.CommentReply) => {
-  vscode.window.withProgress({
-    location: vscode.ProgressLocation.Notification,
-    title: "Generating AI response...",
-    cancellable: true
-  }, async () => {
-    await aiEdit(reply);
-    thread = reply.thread;
-  });
-}));
-
-
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.deleteNoteComment', (comment: NoteComment) => {
-  const thread = comment.parent;
-  if (!thread) {
-    return;
-  }
-
-  thread.comments = thread.comments.filter(cmt => (cmt as NoteComment).id !== comment.id);
-
-  if (thread.comments.length === 0) {
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.deleteNote', (thread: vscode.CommentThread) => {
     thread.dispose();
-  }
-}));
+  }));
 
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.deleteNote', (thread: vscode.CommentThread) => {
-  thread.dispose();
-}));
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.inline.new', async () => {
+    // move focus line to the end of the current selection
+    await vscode.commands.executeCommand('cursorLineEndSelect');
+    await vscode.commands.executeCommand('workbench.action.addComment');
+  }));
 
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.inline.new', async () => {
-  // move focus line to the end of the current selection
-  await vscode.commands.executeCommand('cursorLineEndSelect');
-  await vscode.commands.executeCommand('workbench.action.addComment');
-}));
-
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.cancelsaveNote', (comment: NoteComment) => {
-  if (!comment.parent) {
-    return;
-  }
-
-  comment.parent.comments = comment.parent.comments.map(cmt => {
-    if ((cmt as NoteComment).id === comment.id) {
-      cmt.body = (cmt as NoteComment).savedBody;
-      cmt.mode = vscode.CommentMode.Preview;
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.cancelsaveNote', (comment: NoteComment) => {
+    if (!comment.parent) {
+      return;
     }
 
-    return cmt;
-  });
-}));
+    comment.parent.comments = comment.parent.comments.map(cmt => {
+      if ((cmt as NoteComment).id === comment.id) {
+        cmt.body = (cmt as NoteComment).savedBody;
+        cmt.mode = vscode.CommentMode.Preview;
+      }
 
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.saveNote', (comment: NoteComment) => {
-  if (!comment.parent) {
-    return;
-  }
+      return cmt;
+    });
+  }));
 
-  comment.parent.comments = comment.parent.comments.map(cmt => {
-    if ((cmt as NoteComment).id === comment.id) {
-      (cmt as NoteComment).savedBody = cmt.body;
-      cmt.mode = vscode.CommentMode.Preview;
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.saveNote', (comment: NoteComment) => {
+    if (!comment.parent) {
+      return;
     }
 
-    return cmt;
-  });
-}));
+    comment.parent.comments = comment.parent.comments.map(cmt => {
+      if ((cmt as NoteComment).id === comment.id) {
+        (cmt as NoteComment).savedBody = cmt.body;
+        cmt.mode = vscode.CommentMode.Preview;
+      }
 
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.editNote', (comment: NoteComment) => {
-  if (!comment.parent) {
-    return;
-  }
+      return cmt;
+    });
+  }));
 
-  comment.parent.comments = comment.parent.comments.map(cmt => {
-    if ((cmt as NoteComment).id === comment.id) {
-      cmt.mode = vscode.CommentMode.Editing;
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.editNote', (comment: NoteComment) => {
+    if (!comment.parent) {
+      return;
     }
 
-    return cmt;
-  });
-}));
+    comment.parent.comments = comment.parent.comments.map(cmt => {
+      if ((cmt as NoteComment).id === comment.id) {
+        cmt.mode = vscode.CommentMode.Editing;
+      }
 
-context.subscriptions.push(vscode.commands.registerCommand('mywiki.dispose', () => {
-  commentController.dispose();
-}));
+      return cmt;
+    });
+  }));
+
+	commands.registerCommand("codelens-sample.codelensAction", (args: any) => {
+		window.showInformationMessage(`CodeLens action clicked with args=${args}`);
+	});
+
+  context.subscriptions.push(vscode.commands.registerCommand('mywiki.dispose', () => {
+    commentController.dispose();
+  }));
 
 }
 

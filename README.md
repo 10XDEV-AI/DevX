@@ -2,6 +2,9 @@
     <img src="https://i.postimg.cc/NMggZYqR/Group-7.png" width=100>
 </div>
 
+
+yo yo yo
+
 <h1 align="center">DevX AI</h1>
 
 ## DevX and AI Inline Code Editor Extension

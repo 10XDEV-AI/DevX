@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = exports.showInputBox = exports.NoteComment = void 0;
+const vscode_1 = require("vscode");
 const vscode = require("vscode");
 const openai_1 = require("openai");
 const editAI_1 = require("./utilities/editAI");
 const askAI_1 = require("./utilities/askAI");
 const ChatViewProvider_1 = require("./panels/ChatViewProvider");
+const CodelensProvider_1 = require("./CodelensProvider");
 let commentId = 1;
 class NoteComment {
     constructor(body, mode, author, parent, contextValue) {
@@ -87,6 +89,8 @@ async function activate(context) {
         const apiKey = await showInputBox();
         await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
     }
+    const codelensProvider = new CodelensProvider_1.CodelensProvider();
+    vscode_1.languages.registerCodeLensProvider("*", codelensProvider);
     const provider = new ChatViewProvider_1.ChatViewProvider(context.extensionUri);
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider_1.ChatViewProvider.viewType, provider));
     // A `CommentController` is able to provide comments for documents.
@@ -151,6 +155,57 @@ async function activate(context) {
             thread = reply.thread;
         });
     }));
+    context.subscriptions.push(vscode.commands.registerCommand('mywiki.Accept', (uri, range) => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const rangeText = editor.document.getText(range);
+            console.log(`Accepting: ${rangeText}`);
+            const lines = rangeText.split('\n');
+            const linesToAccept = [];
+            for (const line of lines) {
+                if (line.startsWith('+') || line.startsWith(' ')) {
+                    linesToAccept.push(line.substring(1));
+                }
+            }
+            editor.edit(editBuilder => {
+                editBuilder.replace(range, linesToAccept.join('\n'));
+            });
+        }
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('mywiki.Reject', (uri, range) => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const rangeText = editor.document.getText(range);
+            console.log(`Accepting: ${rangeText}`);
+            const lines = rangeText.split('\n');
+            const linesToAccept = [];
+            for (const line of lines) {
+                if (line.startsWith('-') || line.startsWith(' ')) {
+                    linesToAccept.push(line.substring(1));
+                }
+            }
+            editor.edit(editBuilder => {
+                editBuilder.replace(range, linesToAccept.join('\n'));
+            });
+        }
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('mywiki.Merge', (uri, range) => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const rangeText = editor.document.getText(range);
+            console.log(`Accepting: ${rangeText}`);
+            const lines = rangeText.split('\n');
+            const linesToAccept = [];
+            for (const line of lines) {
+                if (line.startsWith('+') || line.startsWith('-')) {
+                    linesToAccept.push(line.substring(1));
+                }
+            }
+            editor.edit(editBuilder => {
+                editBuilder.replace(range, linesToAccept.join('\n'));
+            });
+        }
+    }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.deleteNoteComment', (comment) => {
         const thread = comment.parent;
         if (!thread) {
@@ -204,6 +259,9 @@ async function activate(context) {
             return cmt;
         });
     }));
+    vscode_1.commands.registerCommand("codelens-sample.codelensAction", (args) => {
+        vscode_1.window.showInformationMessage(`CodeLens action clicked with args=${args}`);
+    });
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.dispose', () => {
         commentController.dispose();
     }));

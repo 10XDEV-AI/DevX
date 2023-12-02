@@ -1,8 +1,79 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.aiEdit = void 0;
+exports.aiEdit = exports.addDiffsToCode = void 0;
 const vscode = require("vscode");
 const openai_1 = require("openai");
+const diff = require("git-diff");
+function transformCodeDiff(codeDiff) {
+    const lines = codeDiff.split('\n');
+    let result = '';
+    let inAddedBlock = false;
+    let inRemovedBlock = false;
+    for (const line of lines) {
+        if (line.startsWith('+')) {
+            if (inRemovedBlock) {
+                result += '<<<<<<<\n';
+                inRemovedBlock = false;
+            }
+            if (!inAddedBlock) {
+                result += '>>>>>>>\n';
+                inAddedBlock = true;
+            }
+            result += line.substring(1) + '\n';
+        }
+        else if (line.startsWith('-')) {
+            if (!inRemovedBlock) {
+                result += '=======\n';
+                inRemovedBlock = true;
+            }
+            if (inAddedBlock) {
+                result += '=======\n';
+                inAddedBlock = false;
+            }
+            result += line.substring(1) + '\n';
+        }
+        else {
+            if (inAddedBlock) {
+                result += '=======\n';
+                inAddedBlock = false;
+            }
+            if (inRemovedBlock) {
+                result += '<<<<<<<\n';
+                inRemovedBlock = false;
+            }
+            result += line.substring(1) + '\n';
+        }
+    }
+    if (inAddedBlock) {
+        result += '=======\n';
+    }
+    if (inRemovedBlock) {
+        result += '<<<<<<<\n';
+    }
+    return result;
+}
+function addDiffsToCode(old_code_block, new_code_block) {
+    const options = {
+        color: false,
+        flags: "",
+        forceFake: true,
+        noHeaders: true,
+        save: false,
+        wordDiff: false // Get a word diff instead of a line diff?
+    };
+    let diffOutput = diff(old_code_block, new_code_block, options);
+    console.log(old_code_block);
+    console.log(new_code_block);
+    console.log(diffOutput);
+    if (undefined !== diffOutput) {
+        if (diffOutput.includes('\n\\ No newline at end of file')) {
+            diffOutput = diffOutput.replaceAll('\n\\ No newline at end of file', '');
+        }
+        return diffOutput;
+    }
+    return '';
+}
+exports.addDiffsToCode = addDiffsToCode;
 /**
  * Gets the highlighted code for this comment thread
  * @param thread
@@ -28,12 +99,26 @@ async function aiEdit(reply) {
     const model = vscode.workspace.getConfiguration('devxai').get('models') + "";
     const messages = [];
     let codeBlock = await getCommentThreadCode(thread);
-    // Empty lines in the beginning of codeBlock stored in a variable
-    const emptyLinesBefore = codeBlock.match(/^\s*[\r\n]/) || [];
-    // Empty lines after
-    const emptyLinesAfter = codeBlock.match(/[\r\n]\s*$/) || [];
-    //remove empty lines from the beginning and end of codeBlock
-    codeBlock = codeBlock.replace(/^\s*[\r\n]/gm, '').replace(/[\r\n]\s*$/gm, '');
+    // Split the code block into lines
+    const lines = codeBlock.split('\n');
+    // Find the index of the first non-empty line
+    let firstNonEmptyIndex = 0;
+    while (firstNonEmptyIndex < lines.length && lines[firstNonEmptyIndex].trim() === '') {
+        firstNonEmptyIndex++;
+    }
+    // Find the index of the last non-empty line
+    let lastNonEmptyIndex = lines.length - 1;
+    while (lastNonEmptyIndex >= 0 && lines[lastNonEmptyIndex].trim() === '') {
+        lastNonEmptyIndex--;
+    }
+    //store the empty lines before in a string 
+    const emptyLinesBefore = lines.slice(0, firstNonEmptyIndex).join('\n');
+    const emptyLinesAfter = lines.slice(lastNonEmptyIndex + 1).join('\n');
+    // Extract the non-empty lines
+    const trimmedLines = lines.slice(firstNonEmptyIndex, lastNonEmptyIndex + 1);
+    // Join the non-empty lines back together
+    codeBlock = trimmedLines.join('\n');
+    const codeBlockWithCommonIndent = codeBlock;
     const commonIndent = findCommonIndent(codeBlock);
     codeBlock = codeBlock.replace(new RegExp('^' + commonIndent, 'gm'), '');
     messages.push({ "role": "system", "content": "Return fully edited code as per user request delimitted by tripple quotes and nothing else." });
@@ -94,6 +179,7 @@ async function aiEdit(reply) {
                         "rust",
                         "dart",
                         "scala",
+                        "script",
                         "groovy",
                         "lua",
                         "perl",
@@ -130,13 +216,14 @@ async function aiEdit(reply) {
                     lines[i] = commonIndent + lines[i];
                 }
                 contentBetweenTicks = lines.join('\n');
-                contentBetweenTicks = emptyLinesBefore?.join('') + contentBetweenTicks + emptyLinesAfter?.join('');
+                contentBetweenTicks = emptyLinesBefore + contentBetweenTicks + emptyLinesAfter;
                 const editor = await vscode.window.showTextDocument(thread.uri);
+                const diffs = addDiffsToCode(codeBlockWithCommonIndent, contentBetweenTicks);
                 if (!editor) {
                     return;
                 }
                 editor.edit(editBuilder => {
-                    editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line, 0), thread.range.end), contentBetweenTicks);
+                    editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line, 0), thread.range.end), diffs);
                 });
             }
             else {
@@ -145,7 +232,7 @@ async function aiEdit(reply) {
                     return;
                 }
                 editor.edit(editBuilder => {
-                    editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line, 0), thread.range.end), responseText);
+                    editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line, 0), thread.range.end), addDiffsToCode(codeBlockWithCommonIndent, responseText));
                 });
             }
         }
@@ -156,16 +243,12 @@ async function aiEdit(reply) {
 }
 exports.aiEdit = aiEdit;
 function findCommonIndent(codeBlock) {
-    const lines = codeBlock.split('\n');
-    let commonIndent = '';
-    let previousIndent = '';
-    for (const line of lines) {
-        const indent = line.match(/^\s*/)?.[0];
-        if (indent && (!commonIndent || commonIndent.length > indent.length) && previousIndent.startsWith(indent)) {
-            commonIndent = indent;
-        }
-        previousIndent = indent ?? '';
+    const lines = codeBlock.split('\n').filter(line => line.trim() !== ''); // Filter out empty lines
+    if (lines.length === 0) {
+        return ''; // No lines, so no indent
     }
-    return commonIndent;
+    const indents = lines.map(line => line.match(/^\s*/)?.[0] ?? ''); // Extract indents
+    const smallestIndent = indents.reduce((smallest, current) => (current.length < smallest.length ? current : smallest), indents[0]);
+    return smallestIndent;
 }
 //# sourceMappingURL=editAI.js.map

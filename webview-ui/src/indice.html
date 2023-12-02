@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laravel</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            display: table;
+            font-weight: 100;
+            font-family: 'Lato';
+        }
+
+        .container {
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .content {
+            text-align: center;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="content">
+        <div id="whatever"></div>
+        <textarea>
+        </textarea>
+    </div>
+</div>
+</body>
+<script>
+    var input = document.getElementsByTagName("textarea")[0];
+    input.addEventListener('paste', pasteHandler);
+    var whatever = document.getElementById('whatever');
+    /*Handle paste event*/
+    function pasteHandler(e){    //e:  ClipboardEvent
+        //check if event.clipboardData is supported(chrome)
+        if(e.clipboardData){
+            var items = e.clipboardData.items;
+            if(items){
+                for(var i=0;i<items.length;i++){
+//                    console.log(items[i]);
+                    if(items[i].kind == 'file' && items[i].type.indexOf('image') > -1){
+                        //need to represent the image as a file
+                        var blob = items[i].getAsFile();
+
+                        var reader = new FileReader();
+                        //need base64 to upload to server
+                        reader.readAsDataURL(blob);
+                        reader.onload = function (event) {
+                            var image = new Image();
+                            image.src = event.target.result;
+                            image.width = 250; // a fake resize
+                            whatever.appendChild(image);
+                            uploadFile(blob);
+                        };
+                    }
+                }
+            }
+        }
+    };
+
+    var uploadFile = function (file) {
+        var formData = new FormData();
+        formData.append('upload_file', file);
+
+        // now post a new XHR request
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload/attachments');
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    console.log('uploaded done!');
+                } else {
+                    alert("error: " + xhr.responseText); // handle response.
+                }
+            }
+        };
+
+        xhr.send(formData);
+    };
+</script>
+</html>

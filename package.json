@@ -47,23 +47,23 @@
   "contributes": {
     "viewsContainers": {
       "activitybar": [
-         {
-            "id": "DevX",
-            "title": "DevX",
-            "icon": "./assets/x.svg"
-         }
+        {
+          "id": "DevX",
+          "title": "DevX",
+          "icon": "./assets/x.svg"
+        }
       ]
-   },
-   "views": {
-    "DevX" : [
-      {
-        "id": "DevX",
-        "name": "DevX",
-        "type": "webview",
-        "icon": "$hello"
-      }
-    ]
-   },
+    },
+    "views": {
+      "DevX": [
+        {
+          "id": "DevX",
+          "name": "DevX",
+          "type": "webview",
+          "icon": "$hello"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "hello-world.showHelloWorld",
@@ -194,16 +194,16 @@
       ],
       "editor/context": [
         {
-            "command": "mywiki.addFile",
-            "group": "navigation",
-            "when": "(!editorTextFocus || !editorHasSelection)"
+          "command": "mywiki.addFile",
+          "group": "navigation",
+          "when": "(!editorTextFocus || !editorHasSelection)"
         },
         {
           "command": "mywiki.addSelection",
           "title": "Add Selection to DevX",
           "when": "editorTextFocus && editorHasSelection"
         }
-    ]
+      ]
     },
     "keybindings": [
       {
@@ -248,15 +248,19 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
+    "test": "vscode-test",
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
+    "@types/git-diff": "^2.0.7",
     "@types/glob": "^7.1.3",
     "@types/mocha": "^10.0.4",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.46.0",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
     "eslint": "^7.19.0",
     "glob": "^7.1.6",
     "prettier": "^2.2.1",
@@ -264,8 +268,11 @@
     "vscode-test": "^1.5.0"
   },
   "dependencies": {
+    "git-diff": "^2.0.6",
     "mocha": "^10.2.0",
     "openai": "^4.19.0"
   },
-  "eslintIgnore": ["node_modules/**"]
+  "eslintIgnore": [
+    "node_modules/**"
+  ]
 }
