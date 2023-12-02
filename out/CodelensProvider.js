@@ -63,14 +63,27 @@ class CodelensProvider {
         if (startLineIndex !== -1) {
             const endLineIndex = document.lineCount - 1;
             const range = new vscode.Range(startLineIndex, 0, endLineIndex, document.lineAt(endLineIndex).text.length);
-            const commands = [];
-            const command = {
-                command: 'extension.addConsoleLog',
-                title: 'Insert console.log',
+            const command1 = {
+                command: 'mywiki.Accept',
+                title: 'Accept',
                 arguments: [document.uri, range]
             };
-            const codeLens = new vscode.CodeLens(range, command);
-            codeLenses.push(codeLens);
+            const codeLens1 = new vscode.CodeLens(range, command1);
+            codeLenses.push(codeLens1);
+            const command2 = {
+                command: 'mywiki.Reject',
+                title: 'Reject',
+                arguments: [document.uri, range]
+            };
+            const codeLens2 = new vscode.CodeLens(range, command2);
+            codeLenses.push(codeLens2);
+            const command3 = {
+                command: 'mywiki.Merge',
+                title: 'Merge',
+                arguments: [document.uri, range]
+            };
+            const codeLens3 = new vscode.CodeLens(range, command3);
+            codeLenses.push(codeLens3);
         }
         return codeLenses;
     }

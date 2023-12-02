@@ -8,6 +8,8 @@ const editAI_1 = require("./utilities/editAI");
 const askAI_1 = require("./utilities/askAI");
 const ChatViewProvider_1 = require("./panels/ChatViewProvider");
 const CodelensProvider_1 = require("./CodelensProvider");
+const editAI_2 = require("./utilities/editAI");
+const editAI_3 = require("./utilities/editAI");
 let commentId = 1;
 class NoteComment {
     constructor(body, mode, author, parent, contextValue) {
@@ -170,6 +172,9 @@ async function activate(context) {
             editor.edit(editBuilder => {
                 editBuilder.replace(range, linesToAccept.join('\n'));
             });
+            //remove decorations on these lines
+            editor.setDecorations(editAI_2.greenDecoration, []);
+            editor.setDecorations(editAI_3.redDecoration, []);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.Reject', (uri, range) => {
@@ -187,6 +192,8 @@ async function activate(context) {
             editor.edit(editBuilder => {
                 editBuilder.replace(range, linesToAccept.join('\n'));
             });
+            editor.setDecorations(editAI_2.greenDecoration, []);
+            editor.setDecorations(editAI_3.redDecoration, []);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.Merge', (uri, range) => {
@@ -204,6 +211,8 @@ async function activate(context) {
             editor.edit(editBuilder => {
                 editBuilder.replace(range, linesToAccept.join('\n'));
             });
+            editor.setDecorations(editAI_2.greenDecoration, []);
+            editor.setDecorations(editAI_3.redDecoration, []);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.deleteNoteComment', (comment) => {

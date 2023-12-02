@@ -5,6 +5,8 @@ import { aiEdit } from './utilities/editAI';
 import { askAI } from './utilities/askAI';
 import {ChatViewProvider} from './panels/ChatViewProvider';
 import { CodelensProvider } from './CodelensProvider';
+import { greenDecoration } from './utilities/editAI';
+import { redDecoration } from './utilities/editAI';
 
 let commentId = 1;
  
@@ -201,6 +203,11 @@ export async function activate(context: ExtensionContext) {
     editor.edit(editBuilder => {
       editBuilder.replace(range, linesToAccept.join('\n'));
     });
+    
+    //remove decorations on these lines
+    editor.setDecorations(greenDecoration, []);
+    editor.setDecorations(redDecoration, []);
+    
     }
   }));
 
@@ -220,6 +227,10 @@ export async function activate(context: ExtensionContext) {
     editor.edit(editBuilder => {
       editBuilder.replace(range, linesToAccept.join('\n'));
     });
+
+    
+    editor.setDecorations(greenDecoration, []);
+    editor.setDecorations(redDecoration, []);
     }
   }));
 
@@ -239,6 +250,9 @@ export async function activate(context: ExtensionContext) {
     editor.edit(editBuilder => {
       editBuilder.replace(range, linesToAccept.join('\n'));
     });
+
+    editor.setDecorations(greenDecoration, []);
+    editor.setDecorations(redDecoration, []);
     }
   }));
 

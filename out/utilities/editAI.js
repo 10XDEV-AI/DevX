@@ -1,9 +1,43 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.aiEdit = exports.addDiffsToCode = void 0;
+exports.aiEdit = exports.addDiffsToCode = exports.redDecoration = exports.greenDecoration = void 0;
 const vscode = require("vscode");
 const openai_1 = require("openai");
 const diff = require("git-diff");
+exports.greenDecoration = vscode.window.createTextEditorDecorationType({
+    backgroundColor: 'rgba(0, 255, 0, 0.2)',
+    isWholeLine: true,
+});
+exports.redDecoration = vscode.window.createTextEditorDecorationType({
+    backgroundColor: 'rgba(255, 0, 0, 0.2)',
+    isWholeLine: true,
+});
+function applyDecorations(range, diff) {
+    const addedLines = [];
+    const removedLines = [];
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        return;
+    }
+    const startLine = range.start.line;
+    const lines = diff.split('\n');
+    lines.forEach((line, index) => {
+        const lineNumber = startLine + index;
+        const lineLength = line.length;
+        if (line.startsWith('+')) {
+            addedLines.push({
+                range: new vscode.Range(lineNumber, 0, lineNumber, lineLength),
+            });
+        }
+        else if (line.startsWith('-')) {
+            removedLines.push({
+                range: new vscode.Range(lineNumber, 0, lineNumber, lineLength),
+            });
+        }
+    });
+    editor.setDecorations(exports.greenDecoration, addedLines);
+    editor.setDecorations(exports.redDecoration, removedLines);
+}
 function transformCodeDiff(codeDiff) {
     const lines = codeDiff.split('\n');
     let result = '';
@@ -225,15 +259,22 @@ async function aiEdit(reply) {
                 editor.edit(editBuilder => {
                     editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line, 0), thread.range.end), diffs);
                 });
+                //calculate the new range in which the diff string is placed
+                const newRange = new vscode.Range(new vscode.Position(thread.range.start.line, 0), new vscode.Position(thread.range.start.line + diffs.split('\n').length, 0));
+                applyDecorations(newRange, diffs);
             }
             else {
                 const editor = await vscode.window.showTextDocument(thread.uri);
                 if (!editor) {
                     return;
                 }
+                const diffs = addDiffsToCode(codeBlockWithCommonIndent, responseText);
                 editor.edit(editBuilder => {
-                    editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line, 0), thread.range.end), addDiffsToCode(codeBlockWithCommonIndent, responseText));
+                    editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line, 0), thread.range.end), diffs);
                 });
+                //calculate the new range in which the diff string is placed
+                const newRange = new vscode.Range(new vscode.Position(thread.range.start.line, 0), new vscode.Position(thread.range.start.line + diffs.split('\n').length + 1, 0));
+                applyDecorations(newRange, diffs);
             }
         }
         else {

@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { ExtensionContext } from 'vscode';
 
 /**
  * CodelensProvider
@@ -74,16 +73,33 @@ export class CodelensProvider implements vscode.CodeLensProvider {
 		if (startLineIndex !== -1) {
 			const endLineIndex = document.lineCount - 1;
 			const range = new vscode.Range(startLineIndex, 0, endLineIndex, document.lineAt(endLineIndex).text.length);
-			const commands : vscode.Command[] = [];
-
-			const command: vscode.Command = {
-				command: 'extension.addConsoleLog',
-				title: 'Insert console.log',
+			
+			const command1: vscode.Command = {
+				command: 'mywiki.Accept',
+				title: 'Accept',
 				arguments: [document.uri, range]
 			};
-	
-			const codeLens = new vscode.CodeLens(range, command);
-			codeLenses.push(codeLens);
+
+			const codeLens1 = new vscode.CodeLens(range, command1);
+
+			codeLenses.push(codeLens1);
+			const command2: vscode.Command = {
+				command: 'mywiki.Reject',
+				title: 'Reject',
+				arguments: [document.uri, range]
+			};
+
+			const codeLens2 = new vscode.CodeLens(range, command2);
+			codeLenses.push(codeLens2);
+
+			const command3: vscode.Command = {
+				command: 'mywiki.Merge',
+				title: 'Merge',
+				arguments: [document.uri, range]
+			};
+
+			const codeLens3 = new vscode.CodeLens(range, command3);
+			codeLenses.push(codeLens3);
 		}
 	
 		return codeLenses;
