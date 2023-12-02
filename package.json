@@ -171,13 +171,13 @@
       "comments/comment/title": [
         {
           "command": "mywiki.editNote",
-          "group": "group@1",
+          "group": "group@1", 
           "when": "commentController == comment-devxai"
         },
         {
-          "command": "mywiki.deleteNoteComment",
+          "command": "mywiki.copyNote",
           "group": "group@2",
-          "when": "commentController == comment-devxai && comment == canDelete"
+          "when": "commentController == comment-devxai"
         }
       ],
       "comments/comment/context": [
@@ -208,8 +208,8 @@
     "keybindings": [
       {
         "command": "mywiki.inline.new",
-        "key": "ctrl+f ctrl+d",
-        "mac": "cmd+k cmd+d",
+        "key": "ctrl+d ctrl+i",
+        "mac": "cmd+d cmd+i",
         "when": "editorTextFocus"
       }
     ],

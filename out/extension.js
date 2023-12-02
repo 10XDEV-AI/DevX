@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activate = exports.showInputBox = exports.NoteComment = void 0;
+exports.activate = exports.showInputBox = exports.NoteComment = exports.redDecoration = exports.greenDecoration = void 0;
 const vscode_1 = require("vscode");
 const vscode = require("vscode");
 const openai_1 = require("openai");
@@ -8,8 +8,43 @@ const editAI_1 = require("./utilities/editAI");
 const askAI_1 = require("./utilities/askAI");
 const ChatViewProvider_1 = require("./panels/ChatViewProvider");
 const CodelensProvider_1 = require("./CodelensProvider");
-const editAI_2 = require("./utilities/editAI");
-const editAI_3 = require("./utilities/editAI");
+exports.greenDecoration = vscode.window.createTextEditorDecorationType({
+    backgroundColor: 'rgba(0, 255, 0, 0.2)',
+    isWholeLine: true,
+});
+exports.redDecoration = vscode.window.createTextEditorDecorationType({
+    backgroundColor: 'rgba(255, 0, 0, 0.2)',
+    isWholeLine: true,
+});
+function applyDecorations(uri) {
+    const addedLines = [];
+    const removedLines = [];
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        return;
+    }
+    //get text from range
+    const lines = editor.document.getText().split('\n');
+    lines.forEach((line, index) => {
+        const lineNumber = index;
+        const lineLength = line.length;
+        if (line.startsWith('+')) {
+            addedLines.push({
+                range: new vscode.Range(lineNumber, 0, lineNumber, lineLength),
+            });
+        }
+        else if (line.startsWith('-')) {
+            removedLines.push({
+                range: new vscode.Range(lineNumber, 0, lineNumber, lineLength),
+            });
+        }
+        else if (line.startsWith(' ')) {
+            //do nothing
+        }
+    });
+    editor.setDecorations(exports.greenDecoration, addedLines);
+    editor.setDecorations(exports.redDecoration, removedLines);
+}
 let commentId = 1;
 class NoteComment {
     constructor(body, mode, author, parent, contextValue) {
@@ -119,6 +154,9 @@ async function activate(context) {
             }
         }
     });
+    vscode.window.onDidChangeTextEditorSelection(async (e) => {
+        applyDecorations(e.textEditor.document.uri);
+    });
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply) => {
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
@@ -155,6 +193,7 @@ async function activate(context) {
         }, async () => {
             await (0, editAI_1.aiEdit)(reply);
             thread = reply.thread;
+            thread.dispose();
         });
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.Accept', (uri, range) => {
@@ -172,9 +211,6 @@ async function activate(context) {
             editor.edit(editBuilder => {
                 editBuilder.replace(range, linesToAccept.join('\n'));
             });
-            //remove decorations on these lines
-            editor.setDecorations(editAI_2.greenDecoration, []);
-            editor.setDecorations(editAI_3.redDecoration, []);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.Reject', (uri, range) => {
@@ -192,8 +228,6 @@ async function activate(context) {
             editor.edit(editBuilder => {
                 editBuilder.replace(range, linesToAccept.join('\n'));
             });
-            editor.setDecorations(editAI_2.greenDecoration, []);
-            editor.setDecorations(editAI_3.redDecoration, []);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.Merge', (uri, range) => {
@@ -211,8 +245,6 @@ async function activate(context) {
             editor.edit(editBuilder => {
                 editBuilder.replace(range, linesToAccept.join('\n'));
             });
-            editor.setDecorations(editAI_2.greenDecoration, []);
-            editor.setDecorations(editAI_3.redDecoration, []);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.deleteNoteComment', (comment) => {

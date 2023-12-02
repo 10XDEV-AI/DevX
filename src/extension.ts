@@ -5,8 +5,54 @@ import { aiEdit } from './utilities/editAI';
 import { askAI } from './utilities/askAI';
 import {ChatViewProvider} from './panels/ChatViewProvider';
 import { CodelensProvider } from './CodelensProvider';
-import { greenDecoration } from './utilities/editAI';
-import { redDecoration } from './utilities/editAI';
+
+export const greenDecoration = vscode.window.createTextEditorDecorationType({
+  backgroundColor: 'rgba(0, 255, 0, 0.2)',
+isWholeLine: true,
+});
+
+export const redDecoration = vscode.window.createTextEditorDecorationType({
+  backgroundColor: 'rgba(255, 0, 0, 0.2)', // Red background for removed lines
+isWholeLine: true,
+});
+
+function applyDecorations(uri: vscode.Uri) {
+
+  const addedLines: vscode.DecorationOptions[] = [];
+  const removedLines: vscode.DecorationOptions[] = [];
+
+  const editor = vscode.window.activeTextEditor;
+
+  if (!editor) {
+      return;
+  }
+//get text from range
+const lines = editor.document.getText().split('\n');
+
+lines.forEach((line, index) => {
+      const lineNumber = index;
+      const lineLength = line.length;
+
+      if (line.startsWith('+')) {
+          addedLines.push({
+              range: new vscode.Range(lineNumber, 0, lineNumber, lineLength),
+          });
+      } else if (line.startsWith('-')) {
+          removedLines.push({
+              range: new vscode.Range(lineNumber, 0, lineNumber, lineLength),
+          });
+      }
+  else if (line.startsWith(' ')) {
+    //do nothing
+  
+  }
+  });
+
+  editor.setDecorations(greenDecoration, addedLines);
+  editor.setDecorations(redDecoration, removedLines);
+}
+
+
 
 let commentId = 1;
  
@@ -96,8 +142,6 @@ async function validateAPIKey() {
 
 export async function activate(context: ExtensionContext) {
 
-
-
   // Workspace settings override User settings when getting the setting.
 	if (vscode.workspace.getConfiguration('devxai').get('ApiKey') === "" 
   || !(await validateAPIKey())) {
@@ -112,7 +156,6 @@ export async function activate(context: ExtensionContext) {
   const provider = new ChatViewProvider(context.extensionUri);
 
   context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider.viewType, provider));
-
 
   // A `CommentController` is able to provide comments for documents.
   const commentController = vscode.comments.createCommentController('comment-devxai', 'devxai Comment Controller');
@@ -143,6 +186,11 @@ export async function activate(context: ExtensionContext) {
       }
     }
   });
+
+  vscode.window.onDidChangeTextEditorSelection(async (e) => {
+    applyDecorations(e.textEditor.document.uri);
+  }
+  );
     
   context.subscriptions.push(vscode.commands.registerCommand('mywiki.askAI', (reply: vscode.CommentReply) => {
     vscode.window.withProgress({
@@ -154,7 +202,6 @@ export async function activate(context: ExtensionContext) {
       thread = reply.thread;
     });
   }));
-
 
   context.subscriptions.push(vscode.commands.registerCommand('mywiki.addFile', (uri: vscode.Uri) => {
     const editor = vscode.window.activeTextEditor;
@@ -185,6 +232,7 @@ export async function activate(context: ExtensionContext) {
     }, async () => {
       await aiEdit(reply);
       thread = reply.thread;
+      thread.dispose();
     });
   }));
 
@@ -204,9 +252,6 @@ export async function activate(context: ExtensionContext) {
       editBuilder.replace(range, linesToAccept.join('\n'));
     });
     
-    //remove decorations on these lines
-    editor.setDecorations(greenDecoration, []);
-    editor.setDecorations(redDecoration, []);
     
     }
   }));
@@ -228,9 +273,6 @@ export async function activate(context: ExtensionContext) {
       editBuilder.replace(range, linesToAccept.join('\n'));
     });
 
-    
-    editor.setDecorations(greenDecoration, []);
-    editor.setDecorations(redDecoration, []);
     }
   }));
 
@@ -250,9 +292,6 @@ export async function activate(context: ExtensionContext) {
     editor.edit(editBuilder => {
       editBuilder.replace(range, linesToAccept.join('\n'));
     });
-
-    editor.setDecorations(greenDecoration, []);
-    editor.setDecorations(redDecoration, []);
     }
   }));
 

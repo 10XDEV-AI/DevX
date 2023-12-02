@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 
+
 /**
  * CodelensProvider
  */
@@ -15,6 +16,8 @@ export class CodelensProvider implements vscode.CodeLensProvider {
 	}
 
     public provideCodeLenses(document: vscode.TextDocument): vscode.CodeLens[] | Thenable<vscode.CodeLens[]> {
+		
+
 		if (!this.isCodeLensEnabled) {
 			return []; // Return an empty array when CodeLens is deactivated.
 		}
@@ -99,9 +102,8 @@ export class CodelensProvider implements vscode.CodeLensProvider {
 			};
 
 			const codeLens3 = new vscode.CodeLens(range, command3);
-			codeLenses.push(codeLens3);
+			codeLenses.push(codeLens3);	
 		}
-	
 		return codeLenses;
 	}
 	

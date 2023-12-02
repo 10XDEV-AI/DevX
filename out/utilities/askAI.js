@@ -18,8 +18,12 @@ async function getCommentThreadCode(thread) {
  * Updates the thread periodically with the answerString using newer chunks.
  * @param answerString The string containing the AI response.
  * @param thread The comment thread to update.
- */
+*/
 async function updateThread(answerString, thread) {
+    const tripleTickCount = (answerString.match(/```/g) || []).length;
+    if (tripleTickCount % 2 !== 0) {
+        answerString += '\n```';
+    }
     const AIComment = thread.comments[thread.comments.length - 1];
     await new Promise((resolve) => setTimeout(resolve, 500));
     AIComment.body = new vscode.MarkdownString(answerString);

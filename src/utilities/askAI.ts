@@ -19,13 +19,17 @@ import { NoteComment } from '../extension';
  * Updates the thread periodically with the answerString using newer chunks.
  * @param answerString The string containing the AI response.
  * @param thread The comment thread to update.
- */
-async function updateThread(answerString: string, thread: vscode.CommentThread) {
+*/
+ async function updateThread(answerString: string, thread: vscode.CommentThread) {
+    const tripleTickCount = (answerString.match(/```/g) || []).length;
+    if (tripleTickCount % 2 !== 0) {
+        answerString += '\n```';
+	}
     const AIComment = thread.comments[thread.comments.length - 1];
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        AIComment.body = new vscode.MarkdownString(answerString);
-        thread.comments = [...thread.comments];
-}
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    AIComment.body = new vscode.MarkdownString(answerString);
+    thread.comments = [...thread.comments];
+ }
 
 	/**
 	 * User replies with a question.
