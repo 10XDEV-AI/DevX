@@ -20,10 +20,11 @@ suite('addDiffsToCode Function Tests', () => {
         const actualDiffOutput = (0, editAI_1.addDiffsToCode)(oldCodeBlock, newCodeBlock);
         assert.deepStrictEqual(actualDiffOutput, expectedDiffOutput);
     });
-    test('Should return the correct diff output 2', () => {
+    test('Should return the correct diff output and ignore space changes', () => {
         const oldCodeBlock = 'light: {\n// this color will be used in light color themes\nborderColor: darkpink\n},\ndark:{\n// this color will be used in dark color themes\nborderColor: lightpink\n}';
-        const newCodeBlock = 'light: {\n// this color will be used in light color themes\nborderColor: darkblue\n},\ndark:{\n// this color will be used in dark color themes\nborderColor: lightpink\n}';
-        const expectedDiffOutput = ` light: {\n // this color will be used in light color themes\n-borderColor: darkpink\n+borderColor: darkblue\n },\n dark:{\n // this color will be used in dark color themes\n borderColor: lightpink\n }\n`;
+        const newCodeBlock = 'light: {\n  //   this color will be used in light color themes\nborderColor: darkpink\n},\ndark:{\n// this color will be used in dark color themes\nborderColor: lightpink\n}';
+        //const expectedDiffOutput =  ` light: {\n // this color will be used in light color themes\n-borderColor: darkpink\n+borderColor: darkblue\n },\n dark:{\n // this color will be used in dark color themes\n borderColor: lightpink\n }\n`; 
+        const expectedDiffOutput = ``;
         const actualDiffOutput = (0, editAI_1.addDiffsToCode)(oldCodeBlock, newCodeBlock);
         assert.deepStrictEqual(actualDiffOutput, expectedDiffOutput);
     });

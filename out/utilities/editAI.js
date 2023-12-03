@@ -55,15 +55,15 @@ function transformCodeDiff(codeDiff) {
 function addDiffsToCode(old_code_block, new_code_block) {
     const options = {
         color: false,
-        flags: "",
-        forceFake: true,
+        flags: '--ignore-all-space --ignore-space-change --ignore-blank-lines --minimal',
+        forceFake: false,
         noHeaders: true,
         save: false,
         wordDiff: false // Get a word diff instead of a line diff?
     };
     let diffOutput = diff(old_code_block, new_code_block, options);
-    console.log(old_code_block);
-    console.log(new_code_block);
+    //console.log(old_code_block);
+    //console.log(new_code_block);
     console.log(diffOutput);
     if (undefined !== diffOutput) {
         if (diffOutput.includes('\n\\ No newline at end of file')) {
@@ -121,7 +121,7 @@ async function aiEdit(reply) {
     const codeBlockWithCommonIndent = codeBlock;
     const commonIndent = findCommonIndent(codeBlock);
     codeBlock = codeBlock.replace(new RegExp('^' + commonIndent, 'gm'), '');
-    messages.push({ "role": "system", "content": "Return fully edited code as per user request delimitted by tripple quotes and nothing else." });
+    messages.push({ "role": "system", "content": "Return fully edited code as per user request delimited by tripple quotes and nothing else." });
     messages.push({ "role": "user", "content": "```\n" + codeBlock + "\n```" });
     const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
     for (let i = Math.max(0, filteredComments.length - 8); i < filteredComments.length; i++) {

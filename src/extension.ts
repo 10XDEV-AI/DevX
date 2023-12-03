@@ -53,7 +53,6 @@ lines.forEach((line, index) => {
 }
 
 
-
 let commentId = 1;
  
 export class NoteComment implements vscode.Comment {
@@ -113,7 +112,6 @@ export async function showInputBox() {
 				});
 
 				// You can add additional validation logic here based on the response if needed
-
 			} catch (err) {
 				return 'Your API key is invalid';
 			}
@@ -141,11 +139,12 @@ async function validateAPIKey() {
 }
 
 export async function activate(context: ExtensionContext) {
+  let apiKey : string | undefined = '';
 
   // Workspace settings override User settings when getting the setting.
 	if (vscode.workspace.getConfiguration('devxai').get('ApiKey') === "" 
   || !(await validateAPIKey())) {
-    const apiKey = await showInputBox();
+    apiKey = await showInputBox();
     await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
   }
 
@@ -153,7 +152,7 @@ export async function activate(context: ExtensionContext) {
 
   languages.registerCodeLensProvider("*", codelensProvider);
 
-  const provider = new ChatViewProvider(context.extensionUri);
+  const provider = new ChatViewProvider(context.extensionUri, apiKey);
 
   context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider.viewType, provider));
 
@@ -372,4 +371,3 @@ export async function activate(context: ExtensionContext) {
   }));
 
 }
-

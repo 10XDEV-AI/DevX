@@ -3,8 +3,9 @@ light: {
 borderColor: darkblue
 }
 
-hi
 dark:{
-     // this color will be used in dark color themes
-borderColor: lightpink
+         // this color will be used in dark color themes
+
+pageYOffset
+         borderColor: lightpink
 }

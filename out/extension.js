@@ -120,15 +120,16 @@ async function validateAPIKey() {
     return true;
 }
 async function activate(context) {
+    let apiKey = '';
     // Workspace settings override User settings when getting the setting.
     if (vscode.workspace.getConfiguration('devxai').get('ApiKey') === ""
         || !(await validateAPIKey())) {
-        const apiKey = await showInputBox();
+        apiKey = await showInputBox();
         await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
     }
     const codelensProvider = new CodelensProvider_1.CodelensProvider();
     vscode_1.languages.registerCodeLensProvider("*", codelensProvider);
-    const provider = new ChatViewProvider_1.ChatViewProvider(context.extensionUri);
+    const provider = new ChatViewProvider_1.ChatViewProvider(context.extensionUri, apiKey);
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(ChatViewProvider_1.ChatViewProvider.viewType, provider));
     // A `CommentController` is able to provide comments for documents.
     const commentController = vscode.comments.createCommentController('comment-devxai', 'devxai Comment Controller');

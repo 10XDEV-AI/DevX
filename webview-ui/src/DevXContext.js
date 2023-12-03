@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-
 const DevXContext = createContext(undefined);
 
 export function DevXContextProvider({ children }) {
   const [referencedFiles, setReferencedFiles] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const addFile = async (filePath, fileContents) => {
     setReferencedFiles((prevFiles) => ({
@@ -21,6 +22,11 @@ export function DevXContextProvider({ children }) {
         addFile(message.filePath, message.fileContents);
         break;
 
+      case 'setMessages':
+        setMessages(message.messages);
+        setIsLoading(false);
+        break;
+
       default:
         break;
     }
@@ -35,13 +41,12 @@ export function DevXContextProvider({ children }) {
   });
 
 
-  useEffect(() => {
-    console.log(referencedFiles);
-  }, [referencedFiles]); // Log referencedFiles whenever it changes
-
   const value = {
     addFile,
     referencedFiles,
+    messages,
+    isLoading,
+    setMessages
   };
 
   return <DevXContext.Provider value={value}>{children}</DevXContext.Provider>;

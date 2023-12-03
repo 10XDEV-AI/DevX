@@ -58,15 +58,15 @@ export function addDiffsToCode(old_code_block: string, new_code_block: string) :
 	
 	const options = {
 		color: false,      // Add color to the git diff returned?
-		flags: "",       // A space separated string of git diff flags from https://git-scm.com/docs/git-diff#_options
-		forceFake: true,  // Do not try and get a real git diff, just get me a fake? Faster but may not be 100% accurate
+		flags: '--ignore-all-space --ignore-space-change --ignore-blank-lines --minimal',       // A space separated string of git diff flags from https://git-scm.com/docs/git-diff#_options
+		forceFake: false,  // Do not try and get a real git diff, just get me a fake? Faster but may not be 100% accurate
 		noHeaders: true,  // Remove the ugly @@ -1,3 +1,3 @@ header?
 		save: false,       // Remember the options for next time?5
 		wordDiff: false    // Get a word diff instead of a line diff?
 	};
 	let diffOutput  = diff(old_code_block, new_code_block, options);
-	console.log(old_code_block);
-	console.log(new_code_block);
+	//console.log(old_code_block);
+	//console.log(new_code_block);
 	console.log(diffOutput);
 
 	if (undefined!== diffOutput) {
@@ -138,7 +138,7 @@ export function addDiffsToCode(old_code_block: string, new_code_block: string) :
 		const commonIndent = findCommonIndent(codeBlock);
 		codeBlock = codeBlock.replace(new RegExp('^' + commonIndent, 'gm'), '');
 
-		messages.push({"role": "system", "content": "Return fully edited code as per user request delimitted by tripple quotes and nothing else."});
+		messages.push({"role": "system", "content": "Return fully edited code as per user request delimited by tripple quotes and nothing else."});
 		messages.push({"role": "user", "content": "```\n" + codeBlock + "\n```"});	
 
 		const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
