@@ -22,10 +22,22 @@ export function DevXContextProvider({ children }) {
         addFile(message.filePath, message.fileContents);
         break;
 
-      case 'setMessages':
-        setMessages(message.messages);
-        setIsLoading(false);
-        break;
+        case 'updateGPTResponse':
+         const lastIndex = messages.length - 1;
+         console.log(message.response);
+         console.log(lastIndex);
+         if (messages[lastIndex].id === 'user') {
+           const updatedMessages = [...messages, { id: 'assistant', text: message.response }];
+           setMessages(updatedMessages);
+         } else if (messages[lastIndex].id === 'assistant') {
+           const updatedMessages = [...messages];
+           updatedMessages[lastIndex].text = message.response;
+           setMessages(updatedMessages);
+         }      
+
+         setIsLoading(false);
+         break;
+
 
       default:
         break;
@@ -44,6 +56,7 @@ export function DevXContextProvider({ children }) {
   const value = {
     addFile,
     referencedFiles,
+    setReferencedFiles,
     messages,
     isLoading,
     setMessages

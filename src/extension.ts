@@ -147,6 +147,10 @@ export async function activate(context: ExtensionContext) {
     apiKey = await showInputBox();
     await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
   }
+  else{
+    apiKey = vscode.workspace.getConfiguration('devxai').get('ApiKey') as string | undefined;
+  }
+  
 
   const codelensProvider = new CodelensProvider();
 

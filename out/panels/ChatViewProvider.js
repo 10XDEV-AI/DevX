@@ -9,6 +9,7 @@ class ChatViewProvider {
         this._extensionUri = _extensionUri;
         this.apikey = apikey;
         this.openai = new openai_1.default({ apiKey: this.apikey });
+        this.openai = new openai_1.default({ apiKey: this.apikey });
     }
     resolveWebviewView(webviewView, context, _token) {
         this._view = webviewView;
@@ -32,12 +33,6 @@ class ChatViewProvider {
             }
         });
     }
-    // public addColor() {
-    // 	if (this._view) {
-    // 		this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-    // 		this._view.webview.postMessage({ type: 'addColor' });
-    // 	}
-    // }
     addFile(filePath, fileContents) {
         if (this._view) {
             this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
@@ -61,6 +56,7 @@ class ChatViewProvider {
             this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
             this._view.webview.postMessage({ type: 'updateGPTResponse', response });
         }
+        console.log(response);
     }
     _getHtmlForWebview(webview) {
         // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
@@ -85,7 +81,16 @@ class ChatViewProvider {
 				</body>
 				</html>`;
     }
-    async generateText(messages) {
+    async generateText(Reactmessages) {
+        const messages = [];
+        Reactmessages.forEach(message => {
+            if (message.id === 'user') {
+                messages.push({ role: "user", content: message.text });
+            }
+            else if (message.id === 'assistant') {
+                messages.push({ role: "assistant", content: message.text });
+            }
+        });
         const completion = await this.openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: messages,

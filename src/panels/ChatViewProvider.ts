@@ -2,7 +2,6 @@
 import * as vscode from 'vscode';
 import { getNonce } from "../utilities/getNonce";
 import OpenAI from "openai";
-import { Messages } from 'openai/resources/beta/threads/messages/messages';
 
 
 export class ChatViewProvider implements vscode.WebviewViewProvider {
@@ -14,7 +13,9 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
 		private apikey : string | undefined,
-	) {}
+	) {
+		this.openai = new OpenAI({apiKey: this.apikey});
+	}
 	
 	private openai : OpenAI  = new OpenAI({apiKey: this.apikey});
 
@@ -45,12 +46,6 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 		});
 	}
 
-	// public addColor() {
-	// 	if (this._view) {
-	// 		this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-	// 		this._view.webview.postMessage({ type: 'addColor' });
-	// 	}
-	// }
 
 	public addFile(filePath: string, fileContents: string) {
 	if (this._view) {
@@ -78,6 +73,7 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 			this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
 			this._view.webview.postMessage({ type: 'updateGPTResponse', response });
 		}
+		console.log(response);
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
@@ -106,8 +102,18 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 				</html>`;
 	}
 
-	private async generateText(messages: []) {
-    
+	private async generateText(Reactmessages : {id: string, text: string}[]) {
+		const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+		];
+		Reactmessages.forEach(message => {
+			if (message.id === 'user'){
+				messages.push({role: "user", content: message.text});
+			}
+			else if (message.id === 'assistant'){
+				messages.push({role: "assistant", content: message.text});
+			}
+		});
+
 		const completion = await this.openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			messages : messages,

@@ -127,6 +127,9 @@ async function activate(context) {
         apiKey = await showInputBox();
         await vscode.workspace.getConfiguration('devxai').update('ApiKey', apiKey, true);
     }
+    else {
+        apiKey = vscode.workspace.getConfiguration('devxai').get('ApiKey');
+    }
     const codelensProvider = new CodelensProvider_1.CodelensProvider();
     vscode_1.languages.registerCodeLensProvider("*", codelensProvider);
     const provider = new ChatViewProvider_1.ChatViewProvider(context.extensionUri, apiKey);
