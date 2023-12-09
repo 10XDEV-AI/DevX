@@ -24,8 +24,8 @@ export function DevXContextProvider({ children }) {
 
         case 'updateGPTResponse':
          const lastIndex = messages.length - 1;
-         console.log(message.response);
-         console.log(lastIndex);
+        //  console.log(message.response);
+        //  console.log(lastIndex);
          if (messages[lastIndex].id === 'user') {
            const updatedMessages = [...messages, { id: 'assistant', text: message.response }];
            setMessages(updatedMessages);

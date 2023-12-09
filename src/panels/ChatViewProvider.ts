@@ -37,9 +37,10 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 			switch (data.type) {
 				case 'setMessages':
 					{
-						console.log('Recieved from React');
-						console.log(data.messages);
-						this.generateText(data.messages);
+						//console.log('Recieved from React');
+						//console.log(data.messages);
+						//console.log(data.files);
+						this.generateText(data.messages, data.files);
 						break;
 					}
 			}
@@ -73,7 +74,7 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 			this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
 			this._view.webview.postMessage({ type: 'updateGPTResponse', response });
 		}
-		console.log(response);
+		//console.log(response);
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
@@ -102,28 +103,43 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
 				</html>`;
 	}
 
-	private async generateText(Reactmessages : {id: string, text: string}[]) {
-		const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-		];
-		Reactmessages.forEach(message => {
-			if (message.id === 'user'){
-				messages.push({role: "user", content: message.text});
-			}
-			else if (message.id === 'assistant'){
-				messages.push({role: "assistant", content: message.text});
-			}
-		});
-
-		const completion = await this.openai.chat.completions.create({
-			model: "gpt-3.5-turbo",
-			messages : messages,
-			stream : true
+	private async generateText(
+		reactMessages: { id: string; text: string }[],
+		referencedFiles: {
+			[key: string]: {
+			path: string;
+			contents: string;
+			};
+		}[]
+	) {	
+	const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [];
+	//console.log(referencedFiles);
+	
+	Object.values(referencedFiles).forEach(file => {
+			messages.push({role: "user", content: file.path + "```" + file.contents + "```" });
 		});
 	
-		let answerString = "";
-		for await (const chunk of completion) 
+	
+	reactMessages.forEach(message => {
+		if (message.id === 'user'){
+			messages.push({role: "user", content: message.text});
+		}
+		else if (message.id === 'assistant'){
+			messages.push({role: "assistant", content: message.text});
+		}
+	});
+	
+	const completion = await this.openai.chat.completions.create({
+		model: "gpt-3.5-turbo",
+		messages : messages,
+		stream : true
+	});
+	
+	let answerString = "";
+	for await (const chunk of completion) 
 		{
-			if (chunk.choices[0]?.delta?.content) {
+		if (chunk.choices[0]?.delta?.content) {
+
 			answerString += chunk.choices[0].delta.content;
 			this.updateGPTResponse(answerString);
 			}

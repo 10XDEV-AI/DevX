@@ -215,6 +215,7 @@ async function activate(context) {
             editor.edit(editBuilder => {
                 editBuilder.replace(range, linesToAccept.join('\n'));
             });
+            applyDecorations(editor.document.uri);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.Reject', (uri, range) => {
@@ -232,6 +233,7 @@ async function activate(context) {
             editor.edit(editBuilder => {
                 editBuilder.replace(range, linesToAccept.join('\n'));
             });
+            applyDecorations(editor.document.uri);
         }
     }));
     context.subscriptions.push(vscode.commands.registerCommand('mywiki.Merge', (uri, range) => {

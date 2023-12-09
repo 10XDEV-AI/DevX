@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import OpenAI from "openai";
 import * as diff from "git-diff";
+import {diffLines} from 'diff';
 
 function transformCodeDiff(codeDiff: string): string {
     const lines = codeDiff.split('\n');
@@ -53,6 +54,33 @@ function transformCodeDiff(codeDiff: string): string {
 
     return result;
 }
+
+export function addDiffsToCode2(old_code_block: string, new_code_block: string) : string {
+	
+	const diffOutput = diffLines(old_code_block, new_code_block, {
+		ignoreWhitespace: true
+	});
+	//console.log(diffOutput);
+	let result = '';
+	for (const part of diffOutput) {
+	if (part.added) {
+		const parts = part.value.split('\n');
+		for (const parti of parts) {
+			result += '+' + parti+'\n';
+		}
+	} else if (part.removed) {
+		const parts = part.value.split('\n');
+		for (const parti of parts) {
+			result += '-' + parti+'\n';
+		}
+	} else {
+		result += part.value;
+	}
+
+	}
+	return result;
+}
+
 
 export function addDiffsToCode(old_code_block: string, new_code_block: string) : string {
 	
@@ -165,6 +193,7 @@ export function addDiffsToCode(old_code_block: string, new_code_block: string) :
 			});
 
 			const responseText = response.choices[0].message?.content ? response.choices[0].message?.content : 'An error occured. Please try again...';
+			//const responseText = 'Some lines of \ code```';
 			//Case 1 : ```\nCode\n```
 			//Case 2 : ```jsx\nCode\n```
 			//Case 3 : ```Code```
@@ -186,6 +215,8 @@ export function addDiffsToCode(old_code_block: string, new_code_block: string) :
 							"python",
 							"java",
 							"javascript",
+							"js",
+							"ts",
 							"c",
 							"cpp",
 							"html",
@@ -239,7 +270,7 @@ export function addDiffsToCode(old_code_block: string, new_code_block: string) :
 					contentBetweenTicks = lines.join('\n');
 					contentBetweenTicks = emptyLinesBefore + contentBetweenTicks + emptyLinesAfter;
 					const editor = await vscode.window.showTextDocument(thread.uri);
-					const diffs: string = addDiffsToCode(codeBlockWithCommonIndent, contentBetweenTicks);
+					const diffs: string = addDiffsToCode2(codeBlockWithCommonIndent, contentBetweenTicks);
 
 					if (!editor) {
 						return;
@@ -260,7 +291,7 @@ export function addDiffsToCode(old_code_block: string, new_code_block: string) :
 						return;
 					}
 
-					const diffs: string = addDiffsToCode(codeBlockWithCommonIndent, responseText);
+					const diffs: string = addDiffsToCode2(codeBlockWithCommonIndent, responseText);
 					editor.edit(editBuilder => {
 						editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line,0), thread.range.end), diffs);
 					});

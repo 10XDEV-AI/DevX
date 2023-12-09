@@ -7,72 +7,62 @@ interface DiffObject {
   removed?: boolean;
 }
 
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
-import * as vscode from 'vscode';
-// import * as myExtension from '../extension';
-
-// suite('Extension Test Suite', () => {
-//   after(() => {
-//     vscode.window.showInformationMessage('All tests done!');
-//   });
-
-//   test('Sample test', () => {
-//     assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-//     assert.strictEqual(-1, [1, 2, 3].indexOf(0));
-//   });
-// });
 
 
-import { addDiffsToCode } from '../utilities/editAI';
+//import { addDiffsToCode } from '../utilities/editAI';
+import { addDiffsToCode2 } from '../utilities/editAI';
 
 suite('addDiffsToCode Function Tests', () => {
-  test('Should return the correct diff output', () => {
+  test('Should return the correct diff output for same strings', () => {
     const oldCodeBlock = 'console.log("Hello, World!");';
-    const newCodeBlock = 'console.log("Hello, ChatGPT!");';
+    const newCodeBlock = 'console.log("Hello, World!");';
 
-    const expectedDiffOutput =  `-console.log("Hello, World!");\n+console.log("Hello, ChatGPT!");\n`;
+    const expectedDiffOutput =  `console.log("Hello, World!");`;
     
     
-    const actualDiffOutput = addDiffsToCode(oldCodeBlock, newCodeBlock);
+    const actualDiffOutput = addDiffsToCode2(oldCodeBlock, newCodeBlock);
+
+    assert.deepStrictEqual(actualDiffOutput, expectedDiffOutput);
+  });
+
+  test('Should return the correct diff output for similar strings which have extra spaces at the beginning', () => {
+    const oldCodeBlock = 'console.log("Hello, World!");\n ';
+    const newCodeBlock = ' console.log("Hello, World!");\n  ';
+
+    const expectedDiffOutput =  `console.log("Hello, World!");\n`;
+    
+    
+    const actualDiffOutput = addDiffsToCode2(oldCodeBlock, newCodeBlock);
+
+    assert.deepStrictEqual(actualDiffOutput, expectedDiffOutput);
+  });
+
+  test('Should return the correct diff output for similar strings which have extra spaces at the some times', () => {
+    const oldCodeBlock = 'console.log("Hello, World!");\n ';
+    const newCodeBlock = ' console.log("Hello,                    World!");\n  ';
+
+    const expectedDiffOutput =  `console.log("Hello, World!");\n`;
+    
+    
+    const actualDiffOutput = addDiffsToCode2(oldCodeBlock, newCodeBlock);
 
     assert.deepStrictEqual(actualDiffOutput, expectedDiffOutput);
   });
 
   test('Should return the correct diff output and ignore space changes', () => {
     const oldCodeBlock = 'light: {\n// this color will be used in light color themes\nborderColor: darkpink\n},\ndark:{\n// this color will be used in dark color themes\nborderColor: lightpink\n}';
-    const newCodeBlock = 'light: {\n  //   this color will be used in light color themes\nborderColor: darkpink\n},\ndark:{\n// this color will be used in dark color themes\nborderColor: lightpink\n}';
+    const newCodeBlock = 'light: {\n// this color will be used in light color themes\nborderColor: darkblue\n},\ndark:{\n// this color will be used in dark color themes\nborderColor: lightpink\n}';
     
 
-    //const expectedDiffOutput =  ` light: {\n // this color will be used in light color themes\n-borderColor: darkpink\n+borderColor: darkblue\n },\n dark:{\n // this color will be used in dark color themes\n borderColor: lightpink\n }\n`; 
-    const expectedDiffOutput =  ``; 
+    const expectedDiffOutput =  `light: {\n// this color will be used in light color themes\n-borderColor: darkpink\n-\n+borderColor: darkblue\n+\n},\ndark:{\n// this color will be used in dark color themes\nborderColor: lightpink\n}`; 
+    //const expectedDiffOutput =  ``; 
     
     
-    const actualDiffOutput = addDiffsToCode(oldCodeBlock, newCodeBlock);
+    const actualDiffOutput = addDiffsToCode2(oldCodeBlock, newCodeBlock);
 
     assert.deepStrictEqual(actualDiffOutput, expectedDiffOutput);
   });
 
-  // test('Should handle empty code blocks', () => {
-  //   const oldCodeBlock = '';
-  //   const newCodeBlock = '';
-
-  //   const expectedDiffOutput : DiffObject[] = [];
-
-  //   const actualDiffOutput = addDiffsToCode(oldCodeBlock, newCodeBlock);
-
-  //   assert.deepStrictEqual(actualDiffOutput, expectedDiffOutput);
-  // });
-
-  // test('Should handle identical code blocks', () => {
-  //   const codeBlock = 'console.log("Hello, World!");';
-
-  //   const expectedDiffOutput = [{ value: 'console.log("Hello, World!");' }];
-
-  //   const actualDiffOutput = addDiffsToCode(codeBlock, codeBlock);
-
-  //   assert.deepStrictEqual(actualDiffOutput, expectedDiffOutput);
-  // });
 });
 
 

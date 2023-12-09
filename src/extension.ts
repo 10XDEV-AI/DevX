@@ -255,7 +255,7 @@ export async function activate(context: ExtensionContext) {
       editBuilder.replace(range, linesToAccept.join('\n'));
     });
     
-    
+    applyDecorations(editor.document.uri);
     }
   }));
 
@@ -276,6 +276,7 @@ export async function activate(context: ExtensionContext) {
       editBuilder.replace(range, linesToAccept.join('\n'));
     });
 
+    applyDecorations(editor.document.uri);
     }
   }));
 

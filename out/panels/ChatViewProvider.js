@@ -25,9 +25,10 @@ class ChatViewProvider {
             switch (data.type) {
                 case 'setMessages':
                     {
-                        console.log('Recieved from React');
-                        console.log(data.messages);
-                        this.generateText(data.messages);
+                        //console.log('Recieved from React');
+                        //console.log(data.messages);
+                        //console.log(data.files);
+                        this.generateText(data.messages, data.files);
                         break;
                     }
             }
@@ -56,7 +57,7 @@ class ChatViewProvider {
             this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
             this._view.webview.postMessage({ type: 'updateGPTResponse', response });
         }
-        console.log(response);
+        //console.log(response);
     }
     _getHtmlForWebview(webview) {
         // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
@@ -81,9 +82,13 @@ class ChatViewProvider {
 				</body>
 				</html>`;
     }
-    async generateText(Reactmessages) {
+    async generateText(reactMessages, referencedFiles) {
         const messages = [];
-        Reactmessages.forEach(message => {
+        //console.log(referencedFiles);
+        Object.values(referencedFiles).forEach(file => {
+            messages.push({ role: "user", content: file.path + "```" + file.contents + "```" });
+        });
+        reactMessages.forEach(message => {
             if (message.id === 'user') {
                 messages.push({ role: "user", content: message.text });
             }

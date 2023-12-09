@@ -23,7 +23,7 @@ class CodelensProvider {
         let startLineIndex = -1;
         for (let lineIndex = 0; lineIndex < document.lineCount; lineIndex++) {
             const line = document.lineAt(lineIndex);
-            const lineText = line.text.trim();
+            const lineText = line.text;
             if (lineText.startsWith('+') || lineText.startsWith('-')) {
                 if (startLineIndex === -1) {
                     // Start of a new group

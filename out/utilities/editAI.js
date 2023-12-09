@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.aiEdit = exports.addDiffsToCode = void 0;
+exports.aiEdit = exports.addDiffsToCode = exports.addDiffsToCode2 = void 0;
 const vscode = require("vscode");
 const openai_1 = require("openai");
 const diff = require("git-diff");
+const diff_1 = require("diff");
 function transformCodeDiff(codeDiff) {
     const lines = codeDiff.split('\n');
     let result = '';
@@ -52,6 +53,32 @@ function transformCodeDiff(codeDiff) {
     }
     return result;
 }
+function addDiffsToCode2(old_code_block, new_code_block) {
+    const diffOutput = (0, diff_1.diffLines)(old_code_block, new_code_block, {
+        ignoreWhitespace: true
+    });
+    //console.log(diffOutput);
+    let result = '';
+    for (const part of diffOutput) {
+        if (part.added) {
+            const parts = part.value.split('\n');
+            for (const parti of parts) {
+                result += '+' + parti + '\n';
+            }
+        }
+        else if (part.removed) {
+            const parts = part.value.split('\n');
+            for (const parti of parts) {
+                result += '-' + parti + '\n';
+            }
+        }
+        else {
+            result += part.value;
+        }
+    }
+    return result;
+}
+exports.addDiffsToCode2 = addDiffsToCode2;
 function addDiffsToCode(old_code_block, new_code_block) {
     const options = {
         color: false,
@@ -144,6 +171,7 @@ async function aiEdit(reply) {
             max_tokens: 1000,
         });
         const responseText = response.choices[0].message?.content ? response.choices[0].message?.content : 'An error occured. Please try again...';
+        //const responseText = 'Some lines of \ code```';
         //Case 1 : ```\nCode\n```
         //Case 2 : ```jsx\nCode\n```
         //Case 3 : ```Code```
@@ -165,6 +193,8 @@ async function aiEdit(reply) {
                         "python",
                         "java",
                         "javascript",
+                        "js",
+                        "ts",
                         "c",
                         "cpp",
                         "html",
@@ -218,7 +248,7 @@ async function aiEdit(reply) {
                 contentBetweenTicks = lines.join('\n');
                 contentBetweenTicks = emptyLinesBefore + contentBetweenTicks + emptyLinesAfter;
                 const editor = await vscode.window.showTextDocument(thread.uri);
-                const diffs = addDiffsToCode(codeBlockWithCommonIndent, contentBetweenTicks);
+                const diffs = addDiffsToCode2(codeBlockWithCommonIndent, contentBetweenTicks);
                 if (!editor) {
                     return;
                 }
@@ -233,7 +263,7 @@ async function aiEdit(reply) {
                 if (!editor) {
                     return;
                 }
-                const diffs = addDiffsToCode(codeBlockWithCommonIndent, responseText);
+                const diffs = addDiffsToCode2(codeBlockWithCommonIndent, responseText);
                 editor.edit(editBuilder => {
                     editBuilder.replace(new vscode.Range(new vscode.Position(thread.range.start.line, 0), thread.range.end), diffs);
                 });
